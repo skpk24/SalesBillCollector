@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
         $stmt->execute([':u' => $_POST['user_id'], ':r' => $_POST['role_id']]);
     }
-    header('Location: user_roles.php'); exit;
+    //header('Location: user_roles.php'); exit;
 }
 
 $users = $pdo->query("SELECT id, username FROM users ORDER BY username")->fetchAll();

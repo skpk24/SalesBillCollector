@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("DELETE FROM permissions WHERE id=:id");
         $stmt->execute([':id' => $_POST['id']]);
     }
-    header('Location: permissions.php'); exit;
+    //header('Location: permissions.php'); exit;
 }
 
 $editItem = null;

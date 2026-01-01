@@ -1,0 +1,77 @@
+<?php
+$bill_number   = $_GET['bill_number']   ?? '';
+$bill_date     = $_GET['bill_date']     ?? '';
+$retailer_name = $_GET['retailer_name'] ?? '';
+$beat_name     = $_GET['beat_name']     ?? '';
+$salesman      = $_GET['salesman']      ?? '';
+$bill_amount   = $_GET['bill_amount']   ?? '';
+$is_full_pmt   = $_GET['is_full_pmt']   ?? '';
+$cheque_no     = $_GET['cheque_no']     ?? '';
+$pmt_mode      = $_GET['pmt_mode']      ?? '';
+
+$where  = [];
+$params = [];
+$types  = '';
+
+// Build dynamic WHERE (use LIKE for text, = for exact numeric/boolean)
+if ($bill_number !== '') {
+    $where[]  = 'bill_number LIKE ?';
+    $params[] = '%' . $bill_number . '%';
+    $types   .= ':bill_number';
+}
+if ($bill_date !== '') {
+    $where[]  = 'bill_date LIKE ?';
+    $params[] = '%' . $bill_date . '%';
+    $types   .= ':bill_date';
+}
+if ($retailer_name !== '') {
+    $where[]  = 'retailer_name LIKE ?';
+    $params[] = '%' . $retailer_name . '%';
+    $types   .= ':retailer_name';
+}
+if ($beat_name !== '') {
+    $where[]  = 'beat_name LIKE ?';
+    $params[] = '%' . $beat_name . '%';
+    $types   .= ':beat_name';
+}
+if ($salesman !== '') {
+    $where[]  = 'salesman LIKE ?';
+    $params[] = '%' . $salesman . '%';
+    $types   .= ':salesman';
+}
+if ($bill_amount !== '') {
+    $where[]  = 'bill_amount = ?';
+    $params[] = $bill_amount;
+    $types   .= ':bill_amount';
+}
+if ($is_full_pmt !== '') { // expect 0 or 1
+    $where[]  = 'is_full_pmt = ?';
+    $params[] = $is_full_pmt;
+    $types   .= ':is_full_pmt';
+}
+if ($cheque_no !== '') {
+    $where[]  = 'cheque_no LIKE ?';
+    $params[] = '%' . $cheque_no . '%';
+    $types   .= ':cheque_no';
+}
+if ($pmt_mode !== '') {
+    $where[]  = 'pmt_mode LIKE ?';
+    $params[] = '%' . $pmt_mode . '%';
+    $types   .= ':pmt_mode';
+}
+
+$sql = "SELECT * FROM sales_bills";
+if ($where) {
+    $sql .= " WHERE " . implode(" AND ", $where);
+}
+$sql .= " ORDER BY id DESC";
+
+$stmt = $pdo->prepare($sql);
+
+// For PDO use execute with the positional parameters array
+if ($where) {
+    $stmt->execute($params);
+} else {
+    $stmt->execute();
+}
+?>

@@ -1,8 +1,21 @@
 <?php
 // db.php
-$dsn = 'mysql:host=localhost;dbname=u581995023_nandi_ent_col;charset=utf8mb4';
-$dbUser = 'u581995023_nandiganesh';
-$dbPass = 'n@nd!g@n6SH';
+
+$config_path = 'db_credentials.properties';
+
+if (file_exists($config_path)) {
+	
+	$db_details = parse_ini_file($config_path);
+	
+	// Access the credentials using array keys
+    $host = $db_details['DB_HOST'];
+    $user = $db_details['DB_USER'];
+    $pass = $db_details['DB_PASS'];
+    $name = $db_details['DB_NAME'];
+
+$dsn = 'mysql:host='.$host.';dbname='.$name.';charset=utf8mb4';
+$dbUser = $user;
+$dbPass = $pass;
 
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -10,3 +23,5 @@ $options = [
 ];
 
 $pdo = new PDO($dsn, $dbUser, $dbPass, $options);
+
+}

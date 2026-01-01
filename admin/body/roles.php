@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("DELETE FROM roles WHERE id=:id");
         $stmt->execute([':id' => $_POST['id']]);
     }
-    header('Location: default.php?p=cm9sZXMucGhw'); 
+    //header('Location: default.php?p=cm9sZXMucGhw'); 
 }
 
 $editRole = null;

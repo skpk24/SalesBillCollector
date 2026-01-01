@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
         $stmt->execute([':r' => $_POST['role_id'], ':p' => $_POST['permission_id']]);
     }
-    header('Location: default.php?p=cm9sZV9wZXJtaXNzaW9ucy5waHA='); exit;
+    //header('Location: default.php?p=cm9sZV9wZXJtaXNzaW9ucy5waHA='); exit;
 }
 
 $roles = $pdo->query("SELECT id, name FROM roles ORDER BY name")->fetchAll();
@@ -35,16 +35,16 @@ $rows = $pdo->query("
 <div class="row">
   <div class="col-md-4">
     <div class="card card-primary">
-      <div class="card-header"><h3 class="card-title"><?= $editRole ? 'Edit' : 'Add' ?> Role</h3></div>
+      <div class="card-header"><h3 class="card-title">Edit Role</h3></div>
       <form method="post">
         <div class="card-body">
           <input type="hidden" name="action" value="create">
           <div class="form-group">
-            <label>User</label>
+            <label>Role</label>
             <select name="role_id" class="form-control" required>
               <option value="">Select Roles</option>
               <?php foreach ($roles as $u): ?>
-                <option value="<?= $u['id'] ?>"><?= htmlspecialchars($u['name']) ?></option>
+                <option value="<?= $u['role_id'] ?>"><?= htmlspecialchars($u['name']) ?></option>
               <?php endforeach; ?>
             </select>
           </div>
@@ -53,7 +53,7 @@ $rows = $pdo->query("
             <select name="permission_id" class="form-control" required>
               <option value="">Select Permissions</option>
               <?php foreach ($perms as $r): ?>
-                <option value="<?= $r['id'] ?>"><?= htmlspecialchars($r['name']) ?></option>
+                <option value="<?= $r['permission_id'] ?>"><?= htmlspecialchars($r['name']) ?></option>
               <?php endforeach; ?>
             </select>
           </div>
@@ -77,11 +77,11 @@ $rows = $pdo->query("
               <td><?= htmlspecialchars($r['role_name']) ?></td>
               <td><?= htmlspecialchars($r['perm_name']) ?></td>
               <td>
-                <a href="default.php?p=cm9sZV9wZXJtaXNzaW9ucy5waHA=&edit=<?= $r['id'] ?>" class="btn btn-sm btn-info">Edit</a>
+                <a href="default.php?p=cm9sZV9wZXJtaXNzaW9ucy5waHA=&edit=<?= $r['role_id'] ?>" class="btn btn-sm btn-info">Edit</a>
                 <form method="post" action="default.php?p=cm9sZXMucGhw" style="display:inline-block"
                       onsubmit="return confirm('Delete this role?');">
                   <input type="hidden" name="action" value="delete">
-                  <input type="hidden" name="id" value="<?= $r['id'] ?>">
+                  <input type="hidden" name="id" value="<?= $r['role_id'] ?>">
                   <button class="btn btn-sm btn-danger" type="submit">Delete</button>
                 </form>
               </td>
