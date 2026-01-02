@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <!--end::Header-->
         <!--begin::Form-->
-        <form method="GET">
+        <form method="POST">
         <!--begin::Body-->
         <div class="card-body">
             <input type="hidden" name="bill_amount" value="<?= !empty($bill) && !empty($bill['bill_amount']) ? htmlspecialchars($bill['bill_amount']) : 0.0 ?>" />

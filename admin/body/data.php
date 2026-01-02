@@ -78,7 +78,7 @@ $retailers = array_filter(array_unique(array_column($data, 'retailer_name')));
             </tr>
           <?php    
             foreach ($bills as $r): ?>
-            <tr >
+            <tr>
               <td>
                 
                 <a href="default.php?p=ZWRpdGJpbGwucGhw&bill_id=<?= $r['id'] ?>">
