@@ -44,7 +44,8 @@ $rows = $pdo->query("
             <select name="role_id" class="form-control" required>
               <option value="">Select Roles</option>
               <?php foreach ($roles as $u): ?>
-                <option value="<?= $u['role_id'] ?>"><?= htmlspecialchars($u['name']) ?></option>
+                <?php echo print_r($u); ?>
+                <option value="<?= $u['id'] ?>"><?= htmlspecialchars($u['name']) ?></option>
               <?php endforeach; ?>
             </select>
           </div>
@@ -53,7 +54,7 @@ $rows = $pdo->query("
             <select name="permission_id" class="form-control" required>
               <option value="">Select Permissions</option>
               <?php foreach ($perms as $r): ?>
-                <option value="<?= $r['permission_id'] ?>"><?= htmlspecialchars($r['name']) ?></option>
+                <option value="<?= $r['id'] ?>"><?= htmlspecialchars($r['name']) ?></option>
               <?php endforeach; ?>
             </select>
           </div>

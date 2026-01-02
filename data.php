@@ -1,7 +1,7 @@
 <?php
-require 'db.php';
+require __DIR__ . '/admin/db.php';
 
-include('report_filters.php');
+include(__DIR__ . '/report_filters.php');
 
 //$result = $stmt->get_result();
 $bills = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -30,11 +30,10 @@ $retailers = array_filter(array_unique(array_column($data, 'retailer_name')));
                 <th>Bill Date</th>
                 <th>Retailer Name</th>
                 <th>Beat Name</th>
-                <th>Salesman</th>
-                <th>Bill Amount</th>
+                <th>Bill Amt</th>
                 <th>Paid Amt</th>
                 <th>Pending Amt</th>
-                <th>Is Full Pmt</th>
+                <th>Is Full</th>
                 <th>Pmt Mode</th>
                 <th>Cheque No.</th>
               </tr>
@@ -50,9 +49,6 @@ $retailers = array_filter(array_unique(array_column($data, 'retailer_name')));
                 </td>
                 <td>
                   <select id="beatSelect" name="beat_name" class="form-select form-select-sm"><option value="">All Beats</option></select>
-                </td>
-                <td>
-                  <select id="salesmanSelect" name="salesman" class="form-select form-select-sm"><option value="">All Salesmen</option></select>
                 </td>
                 <td><input type="text" name="bill_amount" class="form-control" value="<?php echo htmlspecialchars($bill_amount); ?>"></td>
                 <td>
@@ -70,7 +66,6 @@ $retailers = array_filter(array_unique(array_column($data, 'retailer_name')));
                         <option value="CHEQUE" <?php if ($pmt_mode === 'CHEQUE') echo 'selected'; ?>>CHEQUE</option>
                     </select>
                 </td>
-                <th></th><th></th>
                 <td>
                     <button type="submit" class="btn btn-primary">Filter</button>
                     <a href="<?php echo strtok($_SERVER['REQUEST_URI'], '?').'?p='.$_GET['p']; ?>">Reset</a>
@@ -78,18 +73,19 @@ $retailers = array_filter(array_unique(array_column($data, 'retailer_name')));
             </tr>
           <?php    
             foreach ($bills as $r): ?>
-            <tr >
+            <tr>
               <td>
-                
-                <a href="default.php?p=ZWRpdGJpbGwucGhw&bill_id=<?= $r['id'] ?>">
+                <?php if(!empty($r['paid_amt']) && $r['bill_amount'] == $r['paid_amt']){?>
                   <?= htmlspecialchars($r['bill_number']) ?>
-                </a>
-                
+                <?php }else{?>
+                  <a href="default.php?p=ZWRpdGJpbGwucGhw&bill_id=<?= $r['id'] ?>">
+                    <?= htmlspecialchars($r['bill_number']) ?>
+                  </a>
+                <?php } ?>
               </td>
               <td><?= htmlspecialchars($r['bill_date']) ?></td>
               <td><?= !empty($r['retailer_name']) ? htmlspecialchars($r['retailer_name']) : '' ?></td>
               <td><?= !empty($r['beat_name']) ? htmlspecialchars($r['beat_name']) : '' ?></td>
-              <td><?= !empty($r['salesman']) ? htmlspecialchars($r['salesman']) : '' ?></td>
               <td><?= !empty($r['bill_amount']) ? htmlspecialchars($r['bill_amount']) : '' ?></td>
               <td><?= !empty($r['paid_amt']) ? htmlspecialchars($r['paid_amt']) : '' ?></td>
               <td><?= !empty($r['pending_amt']) ? htmlspecialchars($r['pending_amt']) : '' ?></td>
@@ -102,28 +98,6 @@ $retailers = array_filter(array_unique(array_column($data, 'retailer_name')));
           </tbody>
         </table>
         </form>
-        <table class="table table-hover text-nowrap">
-          <tr>
-            <td colspan="9">
-              <div class="float-end">
-                <form action="dataExporter.php" method="GET">
-                    <input type="hidden" name="p" value="<?php echo !empty($_GET['p']) ? htmlspecialchars($_GET['p']) : ''; ?>">
-                    <input type="hidden" name="bill_number" value="<?php echo !empty($_GET['bill_number']) ? htmlspecialchars($_GET['bill_number']) : ''; ?>">
-                    <input type="hidden" name="bill_date" value="<?php echo !empty($_GET['bill_date']) ? htmlspecialchars($_GET['bill_date']) : ''; ?>">
-                    <input type="hidden" name="retailer_name" value="<?php echo !empty($_GET['retailer_name']) ? htmlspecialchars($_GET['retailer_name']) : ''; ?>">
-                    <input type="hidden" name="beat_name" value="<?php echo !empty($_GET['beat_name']) ? htmlspecialchars($_GET['beat_name']) : ''; ?>">
-                    <input type="hidden" name="salesman" value="<?php echo !empty($_GET['salesman']) ? htmlspecialchars($_GET['salesman']) : ''; ?>">
-                    <input type="hidden" name="pmt_mode" value="<?php echo !empty($_GET['pmt_mode']) ? htmlspecialchars($_GET['pmt_mode']) : ''; ?>">
-                    <input type="hidden" name="is_full_pmt" value="<?php echo !empty($_GET['is_full_pmt']) ? htmlspecialchars($_GET['is_full_pmt']) : ''; ?>">
-                    <input type="hidden" name="cheque_no" value="<?php echo !empty($_GET['cheque_no']) ? htmlspecialchars($_GET['cheque_no']) : ''; ?>">
-                    <!--<input type="date" name="start_date">
-                    <input type="date" name="end_date">-->
-                    <button type="Submit" class="btn btn-primary" id="exportBtn">Export As CSV</button>
-                </form>
-              </div>
-            </td>
-          </tr>   
-        </table>
       </div>
     </div>
   </div>

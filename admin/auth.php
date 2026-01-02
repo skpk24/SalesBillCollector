@@ -35,8 +35,20 @@ function login_user(string $usernameOrEmail, string $password): bool
     $stmt->execute([':id' => $usernameOrEmail]);
     $user = $stmt->fetch();
 
-    if ($user && password_verify($password, $user['password_hash']) && (int)$user['is_active'] === 1) { //[web:12][web:24]
+
+      if ($user && password_verify($password, $user['password_hash']) && (int)$user['is_active'] === 1) { //[web:12][web:24]
         $_SESSION['user_id'] = (int)$user['id'];
+        $_SESSION['fullname'] = $user['fullname'];
+        $_SESSION['created_at'] = $user['created_at'];
+        $sql = "
+            SELECT r.description
+            FROM user_roles ur
+            JOIN roles r ON ur.role_id = r.id
+            WHERE ur.user_id = :uid";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':uid' => (int)$user['id']]);
+        $_SESSION['role'] = $stmt->fetchColumn();
+
         return true;
     }
 
@@ -98,7 +110,7 @@ function user_has_permission(string $permissionName): bool
 function require_permission(string $permissionName): void
 {
     if (!user_has_permission($permissionName)) {
-        http_response_code(403);
+        //http_response_code(403);
         echo "Access denied.";
         exit;
     }

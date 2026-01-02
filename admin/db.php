@@ -1,7 +1,7 @@
 <?php
 // db.php
 
-$config_path = 'db_credentials.properties';
+$config_path = __DIR__ . '/db_credentials.properties';
 
 if (file_exists($config_path)) {
 	

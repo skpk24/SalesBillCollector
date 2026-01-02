@@ -1,10 +1,12 @@
 <?php
 // login.php
-require __DIR__ . '/auth.php';
+require_once __DIR__ . '/admin/auth.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id  = trim($_POST['id'] ?? '');
     $pass = $_POST['password'] ?? '';
+
+    //echo "Debug: Received ID = '$id', Password = '$pass'<br>"; // Debug line
 
     if ($id && $pass && login_user($id, $pass)) {
       
@@ -22,18 +24,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Nandi Enterprises | Log in</title>
     
-  <link rel="icon" type="image/x-icon" href="img/logo-files/favicon-32x32.png">
+  <link rel="icon" type="image/x-icon" href="./admin/img/logo-files/favicon-32x32.png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/icheck-bootstrap/3.0.1/icheck-bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
 </head>
-<body class="hold-transition login-page">
+<body class="login-page bg-body-secondary">
 <div class="login-box">
-  <div class="login-logo">
-      <img src="img/logo-files/logo.png" alt="Nandi Enterprises" width="200"><br>
+  <div class="login-logo card card-outline card-primary">
+    <div class="card-header">
+      <img src="./admin/img/logo-files/logo.png" alt="Nandi Enterprises" width="200"><br>
     <!--a href="#"><b>Nandi Enterprises</b></a-->
-    
+    </div>
   </div>
   <div class="card">
     <div class="card-body login-card-body">
