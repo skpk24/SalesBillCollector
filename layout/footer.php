@@ -4,7 +4,7 @@
         <!--end::To the end-->
         <!--begin::Copyright-->
         <strong>
-          Copyright &copy; 225-2026&nbsp;
+          Copyright &copy; 2205-2026&nbsp;
           <a href="#" class="text-decoration-none">Nandi Enterprises</a>.
         </strong>
         All rights reserved.

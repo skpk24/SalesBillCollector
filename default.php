@@ -9,19 +9,16 @@
   <div class="container-fluid">
     <?php
     if (!empty($_GET['p'])) {
-        $link =  $_SERVER['PHP_SELF'];
-        
         $decoded_string = base64_decode($_GET['p']);
         
         $page =  './'.$decoded_string;
         
-        // echo  $page;
-        
         if("dashboard.php" === $decoded_string){
             //echo "DASHBOARD";
             include('./dashboard.php');
+        }else if("editbill.php" === $decoded_string){
+            include('./admin/body/'.$decoded_string);
         }else if( file_exists($page)){
-            //echo "################## ".$page;
             include($page);
         }
       }else{
