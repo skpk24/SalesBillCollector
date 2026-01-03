@@ -61,6 +61,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$bill) {
         die("Error: Bill not found.");
     }
+
+    $is_paid = false;
+    // If pending amount is zero and paid amount is equal to or greater than bill amount, set is_full_pmt to 0
+    if (!empty($bill['pending_amt']) && $bill['pending_amt'] == 0 && $bill['paid_amt'] >= $bill['bill_amount']) {
+        $is_paid = true;   
+    }
+
 ?>
 
 <!--begin::Quick Example-->
@@ -116,24 +123,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="mb-3">
                 <label for="exampleInputPassword1" class="form-label">Paid Amount</label>
-                <input type="number" step="any" placeholder="0.00" class="form-control" readonly name="paid_amt" value="<?= !empty($bill) && !empty($bill['paid_amt']) && $bill['paid_amt'] != 0.00 ? htmlspecialchars($bill['paid_amt']) : htmlspecialchars($bill['bill_amount']) ?>" />
+                <?php if ($is_paid): ?>
+                    <span>₹<?= !empty($bill) && !empty($bill['paid_amt']) && $bill['paid_amt'] != 0.00 ? htmlspecialchars($bill['paid_amt']) : '' ?></span>
+                <?php else: ?>
+                    <input type="number" step="any" placeholder="0.00" class="form-control" readonly name="paid_amt" value="<?= !empty($bill) && !empty($bill['paid_amt']) && $bill['paid_amt'] != 0.00 ? htmlspecialchars($bill['paid_amt']) : htmlspecialchars($bill['bill_amount']) ?>" />
+                <?php endif; ?>
                 <input type="hidden" name="original_paid_amt" value="<?= !empty($bill) && !empty($bill['paid_amt']) ? htmlspecialchars($bill['paid_amt']) : 0.0 ?>" />
             </div>
+            <?php if (!$is_paid): ?>
             <div class="mb-3" id="myTargetDiv">
                 <label for="exampleInputPassword1" class="form-label">Pending Amount</label>
                 <input type="number" step="any" placeholder="0.00" class="form-control" readonly name="pending_amt" value="<?= !empty($bill) && !empty($bill['pending_amt']) ? htmlspecialchars($bill['pending_amt']) : 0.0 ?>" />
                 <input type="hidden" name="original_pending_amt" value="<?= !empty($bill) && !empty($bill['pending_amt']) ? htmlspecialchars($bill['pending_amt']) : 0.0 ?>" />
             </div>
+            <?php endif; ?>
             <div class="mb-3" id="myTargetDiv1">
                 <label for="exampleInputPassword1" class="form-label">Cheque Number / UPI No.</label>
-                <input type="text" style="text-transform: uppercase;" class="form-control" name="cheque_no" value="<?= !empty($bill) && !empty($bill['cheque_no']) ? htmlspecialchars($bill['cheque_no']) : '' ?>" />
+                <?php if ($is_paid): ?>
+                    <br/><span><?= !empty($bill) && !empty($bill['cheque_no']) ? htmlspecialchars($bill['cheque_no']) : '' ?></span>
+                <?php else: ?>
+                    <input type="text" style="text-transform: uppercase;" class="form-control" name="cheque_no" value="<?= !empty($bill) && !empty($bill['cheque_no']) ? htmlspecialchars($bill['cheque_no']) : '' ?>" />
+                <?php endif; ?>
+                
                 <input type="hidden" name="original_cheque_no" value="<?= !empty($bill) && !empty($bill['cheque_no']) ? htmlspecialchars($bill['cheque_no']) : '' ?>" />
             </div>
         </div>
         <!--end::Body-->
         <!--begin::Footer-->
         <div class="card-footer">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <?php if (!$is_paid): ?>
+            <button type="submit" class="btn btn-primary">Submit sdfs</button>
+            <?php endif; ?>
         </div>
         <!--end::Footer-->
         </form>
@@ -208,6 +228,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 billAmount = parseFloat(Math.abs(billAmount - original_paid_amt));
             }
             const paidAmount = parseFloat($(this).val()) || 0.00;
+            if(paidAmount > billAmount){
+                alert('Paid Amount cannot be greater than Bill Amount');
+                $(this).val(billAmount.toFixed(2));
+                $('input[name="pending_amt"]').val(0.00);
+                return;
+            }
             const pendingAmount = parseFloat(Math.abs(billAmount - paidAmount)).toFixed(2);
             $('input[name="pending_amt"]').val(pendingAmount);
         });
