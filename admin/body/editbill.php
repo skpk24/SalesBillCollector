@@ -152,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!--begin::Footer-->
         <div class="card-footer">
             <?php if (!$is_paid): ?>
-            <button type="submit" class="btn btn-primary">Submit sdfs</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
             <?php endif; ?>
         </div>
         <!--end::Footer-->
