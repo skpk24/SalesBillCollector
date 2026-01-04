@@ -40,14 +40,35 @@ function login_user(string $usernameOrEmail, string $password): bool
         $_SESSION['user_id'] = (int)$user['id'];
         $_SESSION['fullname'] = $user['fullname'];
         $_SESSION['created_at'] = $user['created_at'];
-        $sql = "
-            SELECT r.description
-            FROM user_roles ur
-            JOIN roles r ON ur.role_id = r.id
-            WHERE ur.user_id = :uid";
+        // Fetch user roles and permissions
+        $sql = "SELECT ur.role_id, r.description AS role, p.name AS permission_name
+                FROM user_roles ur
+                INNER JOIN roles r ON ur.role_id = r.id
+                INNER JOIN role_permissions rp ON ur.role_id = rp.role_id
+                INNER JOIN permissions p ON rp.permission_id = p.id
+                WHERE ur.user_id = :uid;";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([':uid' => (int)$user['id']]);
-        $_SESSION['role'] = $stmt->fetchColumn();
+        // $user_role = $stmt->fetch();
+
+        $userSchema = [];
+        $permissions = [];
+
+        // Optimize by grouping permissions under their respective roles
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $roleId = $row['role'];
+            
+            if (!isset($userSchema[$roleId])) {
+                $userSchema[$roleId] = [
+                    'permissions' => []
+                ];
+            }
+            
+            $userSchema[$roleId]['permissions'][] = $row['permission_name'];
+            $permissions[] = $row['permission_name'];
+        }
+        $_SESSION['user_schema'] = $userSchema;
+        $_SESSION['permissions'] = array_unique($permissions);
 
         return true;
     }
@@ -114,4 +135,25 @@ function require_permission(string $permissionName): void
         echo "Access denied.";
         exit;
     }
+}
+
+
+/**
+ * Helper function to verify permission
+ * @param string $requiredAction The action to check
+ * @param string $role The user's current role
+ * @param array $map The permission matrix
+ * @return bool
+ */
+function hasPermission($requiredAction, $role, $map) {
+    if (!isset($map[$role]['permissions'])) {
+        return false;
+    }
+    return in_array($requiredAction, $map[$role]['permissions']);
+}
+
+
+function checkPermission($requiredAction, $permissions) {
+    
+    return in_array($requiredAction, $permissions);
 }

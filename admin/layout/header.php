@@ -50,7 +50,10 @@
                     alt="User Image"
                   />
                   <p>
-                    <?php echo !empty($_SESSION['fullname']) ? $_SESSION['fullname'] : 'User Name'; ?> - <?php echo !empty($_SESSION['role']) ? $_SESSION['role'] : 'Role'; ?>
+                    <?php echo !empty($_SESSION['fullname']) ? $_SESSION['fullname'] : 'User Name'; ?> - 
+                    <span id="userRoles">
+                      <!-- Roles will be populated here -->
+                    </span>
                     <small>Member since <?php echo !empty($_SESSION['created_at']) ? date("M Y", strtotime($_SESSION['created_at'])) : 'Joined'; ?></small>
                   </p>
                 </li>
@@ -71,3 +74,33 @@
         <!--end::Container-->
       </nav>
       <!--end::Header-->
+
+<script type="text/javascript">
+  var authData = <?php echo json_encode($_SESSION['user_schema']); ?>;
+
+// Use $.each to iterate over the object
+let conter = 0 ;
+
+let role = "";
+
+
+Object.entries(authData).forEach(([roleName, details]) => {
+    console.log(`Role: ${roleName}`);
+
+    if(conter == 0) {
+        //console.log("Role: " + role);
+        role = roleName;
+        conter++;
+    }else{
+        role = role + "<br/>& " + roleName;
+        console.log("Role: " + role);
+    }
+    
+    // Loop through the permissions array for this role
+    details.permissions.forEach(perm => {
+        console.log(` - Has Permission: ${perm}`);
+    });
+});
+
+document.getElementById("userRoles").innerHTML = role;
+</script>
