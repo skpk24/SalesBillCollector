@@ -26,8 +26,11 @@ $message = "";
 if (!$id) {
     die("Error: No bill ID specified.");
 }
-
-include('handle_sales_bill.php');
+if ($folder_name === 'admin') {
+    include('handle_sales_bill.php');
+}else{
+    include('./admin/handle_sales_bill.php');
+}
 // 1. Handle Form Submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
