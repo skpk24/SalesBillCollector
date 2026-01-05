@@ -1,5 +1,13 @@
 <?php
-require  './admin/db.php';
+$current_path = $_SERVER['PHP_SELF'];
+$directory_path = dirname($current_path);
+$folder_name = basename($directory_path);
+
+if ($folder_name === 'admin') {
+    require 'db.php';
+}else{
+    require  './admin/db.php';
+}
 
 $id = $_GET['bill_number'] ?? null;
 $message = "";
