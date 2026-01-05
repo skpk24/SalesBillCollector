@@ -2,6 +2,10 @@
         <form method="POST">
         <!--begin::Body-->
         <div class="card-body">
+            <input type="hidden" name="originalCash" value="<?= !empty($bill) && !empty($bill['cash']) ? htmlspecialchars($bill['cash']) : 0.0 ?>" />
+            <input type="hidden" name="originalUpi" value="<?= !empty($bill) && !empty($bill['upi']) ? htmlspecialchars($bill['upi']) : 0.0 ?>" />
+            <input type="hidden" name="originalCheque" value="<?= !empty($bill) && !empty($bill['cheque']) ? htmlspecialchars($bill['cheque']) : 0.0 ?>" />
+            <input type="hidden" name="bill_number" value="<?= !empty($bill) && !empty($bill['bill_number']) ? htmlspecialchars($bill['bill_number']) : '' ?>" />
             <input type="hidden" name="bill_amount" value="<?= !empty($bill) && !empty($bill['bill_amount']) ? htmlspecialchars($bill['bill_amount']) : 0.0 ?>" />
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Payment Type</label>

@@ -12,11 +12,13 @@
         $decoded_string = base64_decode($_GET['p']);
         
         $page =  './'.$decoded_string;
+
+        //echo " Loading Page: ".$decoded_string." <br/>";
         
         if("dashboard.php" === $decoded_string){
             //echo "DASHBOARD";
             include('./dashboard.php');
-        }else if("editbill.php" === $decoded_string){
+        }else if("editbill.php" === $decoded_string || "view_bill_transaction.php" === $decoded_string){
             include('./admin/body/'.$decoded_string);
         }else if( file_exists($page)){
             include($page);

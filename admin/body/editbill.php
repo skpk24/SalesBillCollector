@@ -1,9 +1,16 @@
 <?php
 //require 'db.php';
-
 $current_path = $_SERVER['PHP_SELF'];
 $directory_path = dirname($current_path);
 $folder_name = basename($directory_path);
+
+if ($folder_name === 'admin') {
+    require 'db.php';
+}else{
+    require  './admin/db.php';
+}
+
+
 
 //echo basename($directory_path)."<br/>";
 $isAdmin = false;
@@ -11,11 +18,7 @@ if(checkPermission("admin:editbill", $_SESSION['permissions'])){
     $isAdmin = true;
 }
 
-if ($folder_name === 'admin') {
-    require 'db.php';
-}else{
-    require  './admin/db.php';
-}
+
 
 $id = $_GET['bill_id'] ?? null;
 $message = "";
@@ -24,66 +27,62 @@ if (!$id) {
     die("Error: No bill ID specified.");
 }
 
+include('handle_sales_bill.php');
+// 1. Handle Form Submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        $pmt_mode    = $_POST['pmt_mode'];
-        $cheque_no   = $_POST['cheque_no'];
-        $paid_amt    = $_POST['paid_amt'];
-        $pending_amt = $_POST['pending_amt'];
 
+        $formData = [
+            'pmt_mode' => $_POST['pmt_mode'] ?? null, // Let's say this is empty
+            'cheque_no'       => $_POST['cheque_no'] ?? null,       // Value: 500.00
+            'paid_amt'       => $_POST['paid_amt'] ?? null,       // Value: "REF123"
+            'pending_amt'     => $_POST['pending_amt'] ?? null,      // Let's say this is empty
+            'bill_number'     => $_POST['bill_number'] ?? null      // Let's say this is empty
+        ];
+
+
+        if(!empty($formData['pmt_mode'])){
+            switch($formData['pmt_mode']){
+                case 'CASH':
+                    $formData['cash'] = floatval($_POST['paid_amt'] ?? 0.0) + floatval($_POST['originalCash'] ?? 0.0);
+                    $formData['cheque_no'] = '';
+                    break;
+                case 'UPI':
+                    $formData['upi'] = floatval($_POST['paid_amt'] ?? 0.0) + floatval($_POST['originalUpi'] ?? 0.0);
+                    $formData['cheque_no'] = strtoupper($formData['cheque_no']);
+                    break;
+                case 'CHEQUE':
+                    $formData['cheque'] = floatval($_POST['paid_amt'] ?? 0.0) + floatval($_POST['originalCheque'] ?? 0.0);
+                    $formData['cheque_no'] = strtoupper($formData['cheque_no']);
+                    break;
+                default:
+                    // No payment mode selected or NONE
+                    break;
+            }
+        }
+    createBillTransaction($pdo, $id, $_SESSION['user_id'], $_SESSION['fullname'], $formData['pmt_mode'], $formData['paid_amt'], $formData['cheque_no'], $formData['bill_number']);
+    $formData['is_full_pmt'] = $_POST['is_full_pmt'];
     if($isAdmin){
-        $retailer_name = $_POST['retailer_name'];
-        $salesman = $_POST['salesman'];
-        $beat_name = $_POST['beat_name'];
+        $formData['retailer_name'] = $_POST['retailer_name'];
+        $formData['salesman'] = $_POST['salesman'];
+        $formData['beat_name'] = $_POST['beat_name'];
 
         $fullname = '';    $user_id = null;
-        if(!empty($salesman) && strpos($salesman, '#') !== false){
-            list($user_id, $fullname) = explode('#', $salesman, 2);
+        if(!empty($formData['salesman']) && strpos($formData['salesman'], '#') !== false){
+            list($user_id, $fullname) = explode('#', $formData['salesman'], 2);
+            $formData['user_id'] = $user_id;
+            $formData['fullname'] = $fullname;
         }   
-        if(!empty($pmt_mode) && $pmt_mode == 'NONE'){
-            $pmt_mode = '';
-        }
-        $is_full_pmt = $_POST['is_full_pmt'];
-        if(!empty($cheque_no)){
-            $cheque_no = strtoupper($cheque_no);
+
+        if(!empty($formData['pmt_mode']) && $formData['pmt_mode'] == 'NONE'){
+            $formData['pmt_mode'] = '';
         }
 
-        $stmt = $pdo->prepare("UPDATE sales_bills SET pmt_mode=:n, cheque_no=:d, paid_amt=:p, pending_amt=:q, is_full_pmt=:f, retailer_name=:r, salesman=:s, beat_name=:b, user_id=:u WHERE id=:id");
-        $result = $stmt->execute([
-            ':n' => $pmt_mode,
-            ':d' => $cheque_no,
-            ':p' => $paid_amt,
-            ':q' => $pending_amt,
-            ':f' => $is_full_pmt,
-            ':r' => $retailer_name,
-            ':s' => $fullname,
-            ':b' => $beat_name,
-            ':u' => $user_id,
-            ':id' => $id
-        ]);
+        $result = updateSaleBill($pdo, $id, $formData);
     }else{
-        // Checkboxes are only sent if checked
-        $original_paid_amt = $_POST['original_paid_amt']; 
+        $formData['paid_amt'] =  floatval($formData['paid_amt']) + floatval($_POST['original_paid_amt'] ?? 0.0);
 
-        if(!empty($original_paid_amt) && is_numeric($original_paid_amt)){
-            $paid_amt += floatval($original_paid_amt);
-        }
-
-        $is_full_pmt = $_POST['is_full_pmt'];
-
-        if(!empty($cheque_no)){
-            $cheque_no = strtoupper($cheque_no);
-        }
-        
-        $stmt = $pdo->prepare("UPDATE sales_bills SET pmt_mode=:n, cheque_no=:d, paid_amt=:p, pending_amt=:q, is_full_pmt=:f WHERE id=:id");
-        $result = $stmt->execute([
-            ':n' => $pmt_mode,
-            ':d' => $cheque_no,
-            ':p' => $paid_amt,
-            ':q' => $pending_amt,
-            ':f' => $is_full_pmt,
-            ':id' => $id
-        ]);
+         $result = updateSaleBill($pdo, $id, $formData);
     }
     
     $message = $result ? "Bill updated successfully!" : "Update failed.";

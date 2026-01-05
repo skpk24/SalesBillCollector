@@ -18,8 +18,8 @@ $retailers = array_filter(array_unique(array_column($data, 'retailer_name')));
 
 <div class="row">
   <div class="col-md-12">
-    <div class="card">
-      <div class="card-header"><h3 class="card-title">Sales Bills</h3></div>
+    <div class="card shadow">
+      <div class="card-header bg-primary text-white"><h3 class="card-title mb-0">Sales Bills</h3></div>
       <div class="card-body table-responsive p-0">
         <form method="get" class="filter">
           <input type="hidden" name="p" value="<?php echo htmlspecialchars($_GET['p']); ?>">
@@ -91,7 +91,16 @@ $retailers = array_filter(array_unique(array_column($data, 'retailer_name')));
               <td><?= !empty($r['pending_amt']) ? htmlspecialchars($r['pending_amt']) : '' ?></td>
               <td><?= !empty($r['is_full_pmt']) ? ($r['is_full_pmt'] == 1? 'Yes' : 'No') : 'No' ?></td>
               <td><?= !empty($r['pmt_mode']) ? htmlspecialchars($r['pmt_mode']) : '' ?></td>
-              <td><?= !empty($r['cheque_no']) ? htmlspecialchars($r['cheque_no']) : '' ?></td>
+              <td>
+                <?php if ($r['is_full_pmt'] == 1): ?>
+                  <?= !empty($r['cheque_no']) ? htmlspecialchars($r['cheque_no']) : '' ?>
+                <?php else: ?>
+                  <a href="default.php?p=dmlld19iaWxsX3RyYW5zYWN0aW9uLnBocA==&bill_number=<?= urlencode($r['bill_number']) ?>">
+                    More Info>>
+                  </a>
+                <?php endif; ?>
+
+              </td>
             </tr>
           <?php endforeach; ?>
           
