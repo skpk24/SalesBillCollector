@@ -4,6 +4,8 @@ require  './admin/db.php';
 $id = $_GET['bill_number'] ?? null;
 $message = "";
 
+echo $id;
+
 if (!$id) {
     die("Error: No bill ID specified.");
 }
