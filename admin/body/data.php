@@ -97,10 +97,10 @@ $retailers = array_filter(array_unique(array_column($data, 'retailer_name')));
               <td><?= !empty($r['pmt_mode']) ? htmlspecialchars($r['pmt_mode']) : '' ?></td>
               <td>
                 
-                <?php if ($bill['is_full_pmt'] == 1): ?>
+                <?php if ($r['is_full_pmt'] == 1): ?>
                   <?= !empty($r['cheque_no']) ? htmlspecialchars($r['cheque_no']) : '' ?>
                 <?php else: ?>
-                  <a href="default.php?p=dmlzd19iaWxsX3RyYW5zYWN0aW9uLnBocA==&bill_number=<?= urlencode($r['bill_number']) ?>">
+                  <a href="default.php?p=dmlld19iaWxsX3RyYW5zYWN0aW9uLnBocA==&bill_number=<?= urlencode($r['bill_number']) ?>">
                     More Info>>
                   </a>
                 <?php endif; ?>

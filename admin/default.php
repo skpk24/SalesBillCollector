@@ -17,7 +17,7 @@
                 
                 $page =  './body/'.$decoded_string;
                 
-                // echo  $page;
+                 //echo  "DDDDDDDD ".$page;
                 
                 if("dashboard.php" === $decoded_string){
                     //echo "DASHBOARD";

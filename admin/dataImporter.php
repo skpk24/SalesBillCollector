@@ -21,7 +21,7 @@ function getUsers(array $userNames = array())
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $stmt = $pdo->prepare("INSERT INTO sales_bills (bill_number, bill_date, retailer_name, beat_name, salesman, bill_amount, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO sales_bills (bill_number, bill_date, retailer_name, beat_name, salesman, bill_amount, user_id, created_by, updated_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     if (isset($_POST['bill_number']) && is_array($_POST['bill_date']) && is_array($_POST['retailer_name']) && is_array($_POST['beat_name']) && is_array($_POST['salesman']) && is_array($_POST['bill_amount'])) {
 
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // 3. Execute with the current row's data
             if (!empty($bill_number) && !empty($bill_date) && !empty($salesman) && !empty($bill_amount)) {
-                $stmt->execute([$bill_number, $bill_date, $retailer_name, $beat_name, $salesman, $bill_amount, $userList[$salesman]]);
+                $stmt->execute([$bill_number, $bill_date, $retailer_name, $beat_name, $salesman, $bill_amount, $userList[$salesman], $_POST['user_id'], $_POST['user_id']]);
                 //echo "".$userList[$salesman]."<br>";
             }
         }

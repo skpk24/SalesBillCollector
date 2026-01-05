@@ -40,7 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'cheque_no'       => $_POST['cheque_no'] ?? null,       // Value: 500.00
             'paid_amt'       => $_POST['paid_amt'] ?? null,       // Value: "REF123"
             'pending_amt'     => $_POST['pending_amt'] ?? null,      // Let's say this is empty
-            'bill_number'     => $_POST['bill_number'] ?? null      // Let's say this is empty
+            'bill_number'     => $_POST['bill_number'] ?? null,     // Let's say this is empty
+            'updated_by'     => $_SESSION['user_id'] ?? null
         ];
 
 

@@ -8,6 +8,8 @@
 
 
 <?php
+$user_id = $_SESSION['user_id'] ?? null;
+
 if (isset($_POST["submit"])) {
     $target_dir = "uploads/";
     
@@ -32,9 +34,10 @@ if (isset($_POST["submit"])) {
                 );
         
         echo "<form action=\"dataImporter.php\" method=\"POST\" onsubmit=\"return confirm('Do you really want to Import the Data?');\">";
+        echo "<input type=\"hidden\" name=\"user_id\" value=\"". htmlspecialchars($user_id). "\"/>";
         echo " <div class=\"card mb-4\">";
-        echo " <div class=\"card-header\">";
-        echo "<h3 class=\"card-title\">The file ". htmlspecialchars(basename($_FILES["fileToUpload"]["name"])). " has been uploaded.</h3>";
+        echo " <div class=\"card-header bg-primary text-white\">";
+        echo "<h3 class=\"card-title mb-0\">The file ". htmlspecialchars(basename($_FILES["fileToUpload"]["name"])). " has been uploaded.</h3>";
          echo "<button type=\"submit\" class=\"btn btn-primary float-end\">Import All</button></div><br>";
         echo " <div class=\"card-body p-0\">";
         // Read the file (Specifically for CSV files like yours)
