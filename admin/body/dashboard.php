@@ -1,10 +1,16 @@
 
-<form action="default.php?p=ZGFzaGJvYXJkLnBocA==" method="post" enctype="multipart/form-data">
-    Select CSV/Text file to upload:
-    <input type="file" name="fileToUpload" id="fileToUpload">
-    <input type="submit" value="Upload and Read" name="submit">
-</form>
-<br>
+ <div class="card card-primary">
+    <div class="card-header"><h3 class="card-title">Upload File (only .csv)</h3></div>
+    <div class="card-body table-responsive p-0">
+    <br/>
+    <form action="default.php?p=ZGFzaGJvYXJkLnBocA==" method="post" enctype="multipart/form-data">
+            <span>Select CSV file to upload:</span>
+        <input type="file" name="fileToUpload" id="fileToUpload">
+        <input type="submit" value="Upload and Read" name="submit">
+    </form>
+    <br>
+    </div>
+</div>
 
 
 <?php

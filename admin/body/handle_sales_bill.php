@@ -67,9 +67,11 @@ function updateSaleBill($pdo, $id, $data) {
     $sql = "UPDATE sales_bills SET " . implode(', ', $setParts) . " WHERE id = :id";
 
     try {
+        //echo "Update " . $sql; // Debug: print the SQL query
         $stmt = $pdo->prepare($sql);
         return $stmt->execute($params);
     } catch (PDOException $e) {
+        echo "Update " . $e->getMessage(); // Debug: print the SQL query
         error_log($e->getMessage());
         return false;
     }

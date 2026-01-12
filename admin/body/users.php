@@ -97,8 +97,8 @@ $users = $pdo->query("SELECT * FROM users ORDER BY id DESC")->fetchAll();
     </div>
   </div>
   <div class="col-md-9">
-    <div class="card">
-      <div class="card-header"><h3 class="card-title">Users</h3></div>
+    <div class="card text-white mb-4">
+      <div class="card-header bg-primary"><h3 class="card-title">Users</h3></div>
       <div class="card-body table-responsive p-0">
         <table class="table table-hover text-nowrap">
           <thead>

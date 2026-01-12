@@ -1,3 +1,4 @@
+<!doctype html>
       <?php include 'session.php'; ?>
       <?php 
          if(!require_permission('super:admin')){

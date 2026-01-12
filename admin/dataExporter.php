@@ -3,11 +3,19 @@ require 'db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
-        include('./body/report_filters.php');
+        if(isset($_GET['f']) && $_GET['f'] === 'p'){
+            include('./body/payment_filters.php');
+        }else{
+            include('./body/report_filters.php');
+        }
 
+        $filenameprefix = 'sales_export_';
+        if(isset($_GET['fn']) && !empty($_GET['fn'])){
+            $filenameprefix = preg_replace('/[^a-zA-Z0-9_-]/', '_', $_GET['fn']) . '_';
+        }
         // Set headers for CSV download
         header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename=sales_export_' . date('Y-m-d') . '.csv');
+        header('Content-Disposition: attachment; filename=' . $filenameprefix . date('Y-m-d') . '.csv');
 
         // Create file pointer connected to PHP output stream
         $output = fopen('php://output', 'w');

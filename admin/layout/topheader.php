@@ -1,4 +1,4 @@
-<!doctype html>
+
 <html lang="en">
   <?php include './layout/head.php'; ?>
   <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">

@@ -64,7 +64,7 @@ $rows = $pdo->query("
   </div>
 
   <div class="col-md-8">
-    <div class="card">
+    <div class="card card-primary">
       <div class="card-header"><h3 class="card-title">User Roles</h3></div>
       <div class="card-body table-responsive p-0">
         <table class="table table-hover text-nowrap">

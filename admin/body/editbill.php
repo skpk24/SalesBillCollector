@@ -35,60 +35,68 @@ if ($folder_name === 'admin') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
-        $formData = [
-            'pmt_mode' => $_POST['pmt_mode'] ?? null, // Let's say this is empty
-            'cheque_no'       => $_POST['cheque_no'] ?? null,       // Value: 500.00
-            'paid_amt'       => $_POST['paid_amt'] ?? null,       // Value: "REF123"
-            'pending_amt'     => $_POST['pending_amt'] ?? null,      // Let's say this is empty
-            'bill_number'     => $_POST['bill_number'] ?? null,     // Let's say this is empty
-            'updated_by'     => $_SESSION['user_id'] ?? null
-        ];
+    $formData = [
+        'pmt_mode' => $_POST['pmt_mode'] ?? null, // Let's say this is empty
+        'cheque_no'       => $_POST['cheque_no'] ?? null,       // Value: 500.00
+        'paid_amt'       => $_POST['paid_amt'] ?? null,       // Value: "REF123"
+        'pending_amt'     => $_POST['pending_amt'] ?? null,      // Let's say this is empty
+        'bill_number'     => $_POST['bill_number'] ?? null,     // Let's say this is empty
+        'updated_by'     => $_SESSION['user_id'] ?? null
+    ];
 
 
-        if(!empty($formData['pmt_mode'])){
-            switch($formData['pmt_mode']){
-                case 'CASH':
-                    $formData['cash'] = floatval($_POST['paid_amt'] ?? 0.0) + floatval($_POST['originalCash'] ?? 0.0);
-                    $formData['cheque_no'] = '';
-                    break;
-                case 'UPI':
-                    $formData['upi'] = floatval($_POST['paid_amt'] ?? 0.0) + floatval($_POST['originalUpi'] ?? 0.0);
-                    $formData['cheque_no'] = strtoupper($formData['cheque_no']);
-                    break;
-                case 'CHEQUE':
-                    $formData['cheque'] = floatval($_POST['paid_amt'] ?? 0.0) + floatval($_POST['originalCheque'] ?? 0.0);
-                    $formData['cheque_no'] = strtoupper($formData['cheque_no']);
-                    break;
-                default:
-                    // No payment mode selected or NONE
-                    break;
-            }
+    if(!empty($formData['pmt_mode'])){
+        switch($formData['pmt_mode']){
+            case 'CASH':
+                $formData['cash'] = floatval($_POST['paid_amt'] ?? 0.0) + floatval($_POST['originalCash'] ?? 0.0);
+                $formData['cheque_no'] = '';
+                break;
+            case 'UPI':
+                $formData['upi'] = floatval($_POST['paid_amt'] ?? 0.0) + floatval($_POST['originalUpi'] ?? 0.0);
+                $formData['cheque_no'] = strtoupper($formData['cheque_no']);
+                break;
+            case 'CHEQUE':
+                $formData['cheque'] = floatval($_POST['paid_amt'] ?? 0.0) + floatval($_POST['originalCheque'] ?? 0.0);
+                $formData['cheque_no'] = strtoupper($formData['cheque_no']);
+                break;
+            default:
+                // No payment mode selected or NONE
+                break;
         }
+    }
     createBillTransaction($pdo, $id, $_SESSION['user_id'], $_SESSION['fullname'], $formData['pmt_mode'], $formData['paid_amt'], $formData['cheque_no'], $formData['bill_number']);
     $formData['is_full_pmt'] = $_POST['is_full_pmt'];
     if($isAdmin){
+        //echo "1111Admin Update: ".json_encode($formData)."<br/><br/>";
         $formData['retailer_name'] = $_POST['retailer_name'];
         $formData['salesman'] = $_POST['salesman'];
         $formData['beat_name'] = $_POST['beat_name'];
 
         $fullname = '';    $user_id = null;
         if(!empty($formData['salesman']) && strpos($formData['salesman'], '#') !== false){
-            list($user_id, $fullname) = explode('#', $formData['salesman'], 2);
+            $saleman = $formData['salesman'];
+            list($user_id, $fullname) = explode('#', $saleman, 2);
             $formData['user_id'] = $user_id;
-            $formData['fullname'] = $fullname;
+            //$formData['fullname'] = $fullname;
+            $formData['salesman'] = $fullname;
         }   
 
         if(!empty($formData['pmt_mode']) && $formData['pmt_mode'] == 'NONE'){
             $formData['pmt_mode'] = '';
         }
+        $formData['paid_amt'] =  floatval($formData['paid_amt']) + floatval($_POST['original_paid_amt'] ?? 0.0);
+        //echo "Admin Update: ".json_encode($formData)."<br/><br/>";
 
         $result = updateSaleBill($pdo, $id, $formData);
     }else{
         $formData['paid_amt'] =  floatval($formData['paid_amt']) + floatval($_POST['original_paid_amt'] ?? 0.0);
 
-         $result = updateSaleBill($pdo, $id, $formData);
+        //echo "User Update: ".json_encode($formData)."<br/><br/>";
+
+        $result = updateSaleBill($pdo, $id, $formData);
     }
     
+    //echo "Update Result: ".($result ? "Success" : "Failure")."<br/><br/>";
     $message = $result ? "Bill updated successfully!" : "Update failed.";
     //header('Location: default.php?p=cm9sZXMucGhw'); 
 }
