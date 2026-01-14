@@ -54,17 +54,17 @@ $retailers = array_filter(array_unique(array_column($data, 'retailer_name')));
           <table class="table table-hover text-nowrap">
             <thead>
               <tr>
-                <th>Bill Number</th>
+                <th>Bill No.</th>
                 <th>Bill Date</th>
                 <th>Retailer Name</th>
                 <th>Beat Name</th>
                 <th>Salesman</th>
-                <th>Bill Amount</th>
+                <th>Bill Amt</th>
                 <th>Paid</th>
-                <th>Pending</th>
+                <th>Cash</th>
+                <th>UPI</th>
+                <th>Cheque</th>
                 <th>Is Full</th>
-                <th>Mode</th>
-                <th>Ref No.</th>
               </tr>
           </thead>
           <tbody>
@@ -79,12 +79,10 @@ $retailers = array_filter(array_unique(array_column($data, 'retailer_name')));
               <td><?= !empty($r['salesman']) ? htmlspecialchars($r['salesman']) : '' ?></td>
               <td><?= !empty($r['bill_amount']) ? htmlspecialchars($r['bill_amount']) : '' ?></td>
               <td><?= !empty($r['paid_amt']) ? htmlspecialchars($r['paid_amt']) : '' ?></td>
-              <td><?= !empty($r['pending_amt']) ? htmlspecialchars($r['pending_amt']) : '' ?></td>
+              <td><?= !empty($r['cash']) ? htmlspecialchars($r['cash']) : '' ?></td>
+              <td><?= !empty($r['upi']) ? htmlspecialchars($r['upi']) : '' ?></td>
+              <td><?= !empty($r['cheque']) ? htmlspecialchars($r['cheque']) : '' ?></td>
               <td><?= !empty($r['is_full_pmt']) ? ($r['is_full_pmt'] == 1? 'Yes' : 'No') : 'No' ?></td>
-              <td><?= !empty($r['pmt_mode']) ? htmlspecialchars($r['pmt_mode']) : '' ?></td>
-              <td>
-                
-              </td>
             </tr>
           <?php endforeach; ?>
           
@@ -96,8 +94,8 @@ $retailers = array_filter(array_unique(array_column($data, 'retailer_name')));
               <div class="float-end">
                 <form action="dataExporter.php" method="GET">
                     <input type="hidden" name="f" value="p">
-                    <input type="hidden" name="fields" value="p">
-                    <input type="hidden" name="headings" value="Bill Number,	Bill Date,	Retailer Name,	Beat Name,	Salesman,	Bill Amount,	Paid,	Pending,	Is Full,	Mode,	Ref No.">
+                    <input type="hidden" name="fields" value="bill_number,bill_date,retailer_name,beat_name,salesman,bill_amount,paid_amt,pending_amt,cash,upi,cheque,is_full_pmt,pmt_mode,cheque_no,created_at,updated_at">
+                    <input type="hidden" name="headings" value="Bill Number, Bill Date, Retailer Name, Beat Name, Salesman, Bill Amount, Paid, Pending, Cash, UPI, Cheque, Is Full, Mode, Ref No., Created At, Updated At">
                     <input type="hidden" name="fn" value="<?php echo !empty($_GET['salesman']) ? htmlspecialchars($_GET['salesman']) : ''; ?>">
                     <input type="hidden" name="p" value="<?php echo !empty($_GET['p']) ? htmlspecialchars($_GET['p']) : ''; ?>">
                     <input type="hidden" name="bill_number" value="<?php echo !empty($_GET['bill_number']) ? htmlspecialchars($_GET['bill_number']) : ''; ?>">
@@ -108,8 +106,13 @@ $retailers = array_filter(array_unique(array_column($data, 'retailer_name')));
                     <input type="hidden" name="pmt_mode" value="<?php echo !empty($_GET['pmt_mode']) ? htmlspecialchars($_GET['pmt_mode']) : ''; ?>">
                     <input type="hidden" name="is_full_pmt" value="<?php echo !empty($_GET['is_full_pmt']) ? htmlspecialchars($_GET['is_full_pmt']) : ''; ?>">
                     <input type="hidden" name="cheque_no" value="<?php echo !empty($_GET['cheque_no']) ? htmlspecialchars($_GET['cheque_no']) : ''; ?>">
-                    <!--<input type="date" name="start_date">
-                    <input type="date" name="end_date">-->
+                    <input type="hidden" name="cash" value="<?php echo !empty($_GET['cash']) ? htmlspecialchars($_GET['cash']) : ''; ?>">
+                    <input type="hidden" name="upi" value="<?php echo !empty($_GET['upi']) ? htmlspecialchars($_GET['upi']) : ''; ?>">
+                    <input type="hidden" name="cheque" value="<?php echo !empty($_GET['cheque']) ? htmlspecialchars($_GET['cheque']) : ''; ?>">
+                    <input type="hidden" name="created_at" value="<?php echo !empty($_GET['created_at']) ? htmlspecialchars($_GET['created_at']) : ''; ?>">
+                    <input type="hidden" name="updated_at" value="<?php echo !empty($_GET['updated_at']) ? htmlspecialchars($_GET['updated_at']) : ''; ?>">
+                    <input type="hidden" name="from_date" value="<?php echo !empty($from_date) ? htmlspecialchars($from_date) : ''; ?>">
+                    <input type="hidden" name="to_date" value="<?php echo !empty($to_date) ? htmlspecialchars($to_date) : ''; ?>">
                     <button type="Submit" class="btn btn-primary" id="exportBtn">Export As CSV</button>
                 </form>
               </div>

@@ -21,11 +21,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $output = fopen('php://output', 'w');
 
         // Add CSV column headers
-        fputcsv($output, [
-            'ID', 'Bill Number', 'Date', 'Retailer', 'Beat', 
-            'Salesman', 'Amount', 'User ID', 'Full Payment', 
-            'Pmt Mode', 'Cheque No'
-        ]);
+        $headings = isset($_GET['headings']) ? explode(',', $_GET['headings']) : [];
+        if (!empty($headings)) {
+            fputcsv($output, $headings);
+        } else {
+            // Default headings if none provided
+            fputcsv($output, ['ID', 'Bill Number', 'Date', 'Retailer', 'Beat', 'Salesman', 'Amount', 'User ID', 'Full Payment', 'Pmt Mode', 'Cheque No']);
+        }
+        
 
         // Fetch and write data rows
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {

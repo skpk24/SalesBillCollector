@@ -30,7 +30,7 @@
               id="navigation"
             >
 			        <li class="nav-item"><a href="default.php?p=ZGFzaGJvYXJkLnBocA==" class="nav-link<?php if(!empty($_GET['p']) && "ZGFzaGJvYXJkLnBocA==" === $_GET['p']){?> active"<?php } ?>"><i class="nav-icon  bi bi-circle"></i><p>Dashboard</p></a></li>
-			        <li class="nav-item"><a href="default.php?p=ZGF0YS5waHA=" class="nav-link<?php if(!empty($_GET['p']) && "ZGF0YS5waHA=" === $_GET['p'] || "ZWRpdGJpbGwucGhw" === $_GET['p']){?> active<?php } ?> "><i class="nav-icon bi bi-person"></i><p>Sales Bills</p></a></li>
+			        <li class="nav-item"><a href="default.php?p=ZGF0YS5waHA=" class="nav-link<?php if(!empty($_GET['p']) && ("ZGF0YS5waHA=" === $_GET['p'] || "ZWRpdGJpbGwucGhw" === $_GET['p'])){?> active<?php } ?> "><i class="nav-icon bi bi-person"></i><p>Sales Bills</p></a></li>
               <li class="nav-item"><a href="default.php?p=cGF5bWVudHMucGhw" class="nav-link<?php if(!empty($_GET['p']) && "cGF5bWVudHMucGhw" === $_GET['p']){?> active<?php } ?>"><i class="nav-icon bi bi-credit-card"></i><p>Payments</p></a></li>
               <li class="nav-item"><a href="default.php?p=dXNlcnMucGhw" class="nav-link<?php if(!empty($_GET['p']) && "dXNlcnMucGhw" === $_GET['p']){?> active<?php } ?>"><i class="nav-icon bi bi-person"></i><p>Users</p></a></li>
               <li class="nav-item"><a href="default.php?p=cm9sZXMucGhw" class="nav-link<?php if(!empty($_GET['p']) && "cm9sZXMucGhw" === $_GET['p']){?> active<?php } ?>"><i class="nav-icon bi bi-person-rolodex"></i><p>Roles</p></a></li>

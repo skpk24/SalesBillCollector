@@ -1,4 +1,25 @@
 <?php
+
+function formateDate($dateStr) {
+    $dateTime = DateTime::createFromFormat('d/m/Y H:i', $dateStr);
+    if ($dateTime === false) {
+        $dateTime = DateTime::createFromFormat('d/m/Y H:i:s', $dateStr);
+    }
+    if ($dateTime) {
+        return $dateTime->format('Y-m-d H:i:s');
+    }
+    
+    return null;
+}
+
+function cleanDate($dateStr, $newMinutes) {
+    $updated = substr_replace($dateStr, $newMinutes, -2);  // 14/01/2026 23:59:59
+    if ($updated) {
+        return $updated;
+    }
+    return null;
+}
+
 $bill_number   = $_GET['bill_number']   ?? '';
 $bill_date     = $_GET['bill_date']     ?? '';
 $retailer_name = $_GET['retailer_name'] ?? '';
@@ -63,30 +84,34 @@ if ($pmt_mode !== '') {
 }
 if($from_date !== '' && $to_date !== '') {
     $where[]  = 'updated_at BETWEEN ? AND ?';
-    $params[] = $from_date;
-    $params[] = $to_date;
+    $params[] = formateDate(cleanDate($from_date, '00:00'));
+    $params[] = formateDate(cleanDate($to_date, '59:59'));
     $types   .= ':from_date,:to_date';
 } elseif ($from_date !== '') {
     $where[]  = 'updated_at >= ?';
-    $params[] = $from_date;
+    $params[] = formateDate(cleanDate($from_date, '00:00'));
     $types   .= ':from_date';
 } elseif ($to_date !== '') {
     $where[]  = 'updated_at <= ?';
-    $params[] = $to_date;
+    $params[] = formateDate(cleanDate($to_date, '59:59'));
     $types   .= ':to_date';
 }
 
+$fields = isset($_GET['fields']) ? $_GET['fields'] : '*';
 
-$sql = "SELECT * FROM sales_bills";
+$sql = "SELECT ".$fields." FROM sales_bills  WHERE bill_amount = paid_amt AND pending_amt = 0 AND 1 = 1 ";
 
 if ($where) {
-    $sql .= " WHERE bill_amount = paid_amt AND pending_amt = 0 AND " . implode(" AND ", $where);
+    $sql .= " AND " . implode(" AND ", $where);
 }
 $sql .= " ORDER BY id DESC";
-//echo $sql;
+//echo  print_r($params);
 $stmt = $pdo->prepare($sql);
 
 // For PDO use execute with the positional parameters array
+
+//echo "SQL Query: ".$sql."<br/>";
+
 if ($where) {
     $stmt->execute($params);
 } else {
