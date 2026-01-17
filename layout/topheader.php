@@ -1,11 +1,9 @@
-
-<html lang="en">
-  <?php include './layout/head.php'; ?>
-  <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
+<?php include './layout/head.php'; ?>
+ <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
     
     <!--begin::App Wrapper-->
     <div class="app-wrapper">
-      <!--begin::Header-->
+        <!--begin::Header-->
       <?php include './layout/header.php'; ?>
       <!--end::Header-->
       <!--begin::Sidebar-->

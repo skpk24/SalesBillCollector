@@ -1,4 +1,11 @@
+<!doctype html>
+      <?php include 'session.php'; ?>
+      <?php 
+         if(!require_permission('super:admin')){
+      ?>
       <?php include './layout/topheader.php'; ?>
+
+      
        
         <div class="app-content">
           <!--begin::Container-->
@@ -11,7 +18,7 @@
                 
                 $page =  './body/'.$decoded_string;
                 
-                // echo  $page;
+                 //echo  "DDDDDDDD ".$page;
                 
                 if("dashboard.php" === $decoded_string){
                     //echo "DASHBOARD";
@@ -29,6 +36,6 @@
           <!--end::Container-->
         </div>
         <!--end::App Content-->
-     
+        <?php }?>
       <?php include './layout/bottomfooter.php'; ?>
      

@@ -44,7 +44,8 @@ $rows = $pdo->query("
             <select name="role_id" class="form-control" required>
               <option value="">Select Roles</option>
               <?php foreach ($roles as $u): ?>
-                <option value="<?= $u['role_id'] ?>"><?= htmlspecialchars($u['name']) ?></option>
+                <?php echo print_r($u); ?>
+                <option value="<?= $u['id'] ?>"><?= htmlspecialchars($u['name']) ?></option>
               <?php endforeach; ?>
             </select>
           </div>
@@ -53,7 +54,7 @@ $rows = $pdo->query("
             <select name="permission_id" class="form-control" required>
               <option value="">Select Permissions</option>
               <?php foreach ($perms as $r): ?>
-                <option value="<?= $r['permission_id'] ?>"><?= htmlspecialchars($r['name']) ?></option>
+                <option value="<?= $r['id'] ?>"><?= htmlspecialchars($r['name']) ?></option>
               <?php endforeach; ?>
             </select>
           </div>
@@ -66,8 +67,8 @@ $rows = $pdo->query("
   </div>
 
   <div class="col-md-8">
-    <div class="card">
-      <div class="card-header"><h3 class="card-title">Roles & Permissions</h3></div>
+    <div class="card text-white mb-4">
+      <div class="card-header bg-primary"><h3 class="card-title">Roles & Permissions</h3></div>
       <div class="card-body table-responsive p-0">
         <table class="table table-hover text-nowrap">
           <thead><tr><th>Role</th><th>Permission</th><th>Actions</th></tr></thead>

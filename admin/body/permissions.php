@@ -32,8 +32,8 @@ $permissions = $pdo->query("SELECT * FROM permissions ORDER BY id DESC")->fetchA
 <!-- same AdminLTE layout as roles.php, just change labels to Permissions -->
 <div class="row">
 <div class="col-md-12">
-    <div class="card">
-      <div class="card-header"><h3 class="card-title">Roles</h3></div>
+    <div class="card text-white mb-4">
+      <div class="card-header bg-primary"><h3 class="card-title">Permissions</h3></div>
       <div class="card-body table-responsive p-0">
         <table class="table table-hover text-nowrap">
           <thead><tr><th>ID</th><th>Name</th><th>Description</th><th>Actions</th></tr></thead>

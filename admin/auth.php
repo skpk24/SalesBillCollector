@@ -35,8 +35,41 @@ function login_user(string $usernameOrEmail, string $password): bool
     $stmt->execute([':id' => $usernameOrEmail]);
     $user = $stmt->fetch();
 
-    if ($user && password_verify($password, $user['password_hash']) && (int)$user['is_active'] === 1) { //[web:12][web:24]
+
+      if ($user && password_verify($password, $user['password_hash']) && (int)$user['is_active'] === 1) { //[web:12][web:24]
         $_SESSION['user_id'] = (int)$user['id'];
+        $_SESSION['fullname'] = $user['fullname'];
+        $_SESSION['created_at'] = $user['created_at'];
+        // Fetch user roles and permissions
+        $sql = "SELECT ur.role_id, r.description AS role, p.name AS permission_name
+                FROM user_roles ur
+                INNER JOIN roles r ON ur.role_id = r.id
+                INNER JOIN role_permissions rp ON ur.role_id = rp.role_id
+                INNER JOIN permissions p ON rp.permission_id = p.id
+                WHERE ur.user_id = :uid;";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':uid' => (int)$user['id']]);
+        // $user_role = $stmt->fetch();
+
+        $userSchema = [];
+        $permissions = [];
+
+        // Optimize by grouping permissions under their respective roles
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $roleId = $row['role'];
+            
+            if (!isset($userSchema[$roleId])) {
+                $userSchema[$roleId] = [
+                    'permissions' => []
+                ];
+            }
+            
+            $userSchema[$roleId]['permissions'][] = $row['permission_name'];
+            $permissions[] = $row['permission_name'];
+        }
+        $_SESSION['user_schema'] = $userSchema;
+        $_SESSION['permissions'] = array_unique($permissions);
+
         return true;
     }
 
@@ -98,8 +131,29 @@ function user_has_permission(string $permissionName): bool
 function require_permission(string $permissionName): void
 {
     if (!user_has_permission($permissionName)) {
-        http_response_code(403);
+        //http_response_code(403);
         echo "Access denied.";
         exit;
     }
+}
+
+
+/**
+ * Helper function to verify permission
+ * @param string $requiredAction The action to check
+ * @param string $role The user's current role
+ * @param array $map The permission matrix
+ * @return bool
+ */
+function hasPermission($requiredAction, $role, $map) {
+    if (!isset($map[$role]['permissions'])) {
+        return false;
+    }
+    return in_array($requiredAction, $map[$role]['permissions']);
+}
+
+
+function checkPermission($requiredAction, $permissions) {
+    
+    return in_array($requiredAction, $permissions);
 }
