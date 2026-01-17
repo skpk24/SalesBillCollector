@@ -29,16 +29,19 @@ if (isset($_POST["submit"])) {
 
     // Upload the file
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-        
-        $fields = array(
-                    0 => "bill_number",
-                    1 => "bill_date",
-                    2 => "retailer_name",
-                    3 => "beat_name",
-                    4 => "salesman",
-                    5 => "bill_amount",
-                );
-        
+    
+        $dbFields = 
+                [
+                    "Bill Number"   => "bill_number" ,
+                    "Bill Date"     => "bill_date",
+                    "Retailer Name" => "retailer_name",
+                    "Beat Name"     => "beat_name",
+                    "Salesman"      => "salesman",
+                    "Bill Amount"   => "bill_amount"
+                ];
+
+        $fields = [];
+
         echo "<form action=\"dataImporter.php\" method=\"POST\" onsubmit=\"return confirm('Do you really want to Import the Data?');\">";
         echo "<input type=\"hidden\" name=\"user_id\" value=\"". htmlspecialchars($user_id). "\"/>";
         echo " <div class=\"card mb-4\">";
@@ -60,8 +63,12 @@ if (isset($_POST["submit"])) {
                 }
                 echo "<tr>";
                 $counter = 0;
+                $headerCounter = 0;
                 foreach ($data as $cell) {
-                    echo "<td>" . htmlspecialchars($cell) . "</td>";
+                    if($is_header){
+                    $fields[$headerCounter++] = $dbFields[$cell] ?? null;
+                    }
+                    echo "<td>" . htmlspecialchars($cell). "</td>";
                     if(!$is_header){
                         echo "<input type=\"hidden\" name=\"".  $fields[$counter++] . "[]\" value=\"". htmlspecialchars($cell). "\"/>";
                     }
@@ -79,6 +86,8 @@ if (isset($_POST["submit"])) {
         }
         echo "<div class=\"card-footer\"><button type=\"submit\" class=\"btn btn-primary float-end\">Import All</button></div>";
         echo "</div></div></form>";
+
+        //echo "<div>". json_encode($fields1). "</div>";
     } else {
         echo "Sorry, there was an error uploading your file.";
     }
