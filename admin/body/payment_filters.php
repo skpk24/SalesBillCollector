@@ -99,7 +99,7 @@ if($from_date !== '' && $to_date !== '') {
 
 $fields = isset($_GET['fields']) ? $_GET['fields'] : '*';
 
-$sql = "SELECT ".$fields." FROM sales_bills  WHERE bill_amount = paid_amt AND pending_amt = 0 AND 1 = 1 ";
+$sql = "SELECT ".$fields." FROM sales_bills  WHERE ((bill_amount = paid_amt AND pending_amt = 0) OR (bill_amount >= paid_amt AND pending_amt > 0)) AND 1 = 1 ";
 
 if ($where) {
     $sql .= " AND " . implode(" AND ", $where);
@@ -117,4 +117,5 @@ if ($where) {
 } else {
     $stmt->execute();
 }
+$formatter = new NumberFormatter('en_IN', NumberFormatter::CURRENCY);
 ?>
