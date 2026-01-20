@@ -14,6 +14,16 @@ $bill_dates = array_values(array_unique(array_column($data, 'bill_date')));
 // For retailers, we filter out the empty strings found in your file
 $retailers = array_filter(array_unique(array_column($data, 'retailer_name')));
 
+
+$total = array_sum(array_column($data, 'bill_amount'));
+
+$collected = array_sum(array_column($data, 'paid_amt'));
+
+$formatter = new NumberFormatter('en_IN', NumberFormatter::CURRENCY);
+
+$total = abs($total - $collected);
+
+
 ?>
 
 <div class="row">
@@ -49,7 +59,7 @@ $retailers = array_filter(array_unique(array_column($data, 'retailer_name')));
     </div>
 
     <div class="card text-white mb-4">
-      <div class="card-header bg-primary"><h3 class="card-title">Payments</h3></div>
+      <div class="card-header bg-primary"><h3 class="card-title"><strong>Payments</strong> &nbsp;&nbsp;Collect By: <?php echo !empty($_GET['salesman']) ? "'".$_GET['salesman']."'" : "All"; ?>  &nbsp;&nbsp; <span class="text-bg-success">&nbsp;Collected: <?php echo htmlspecialchars($formatter->formatCurrency($collected, 'INR')); ?>&nbsp;</span></h3></div>
       <div class="card-body table-responsive p-0">
           <table class="table table-hover text-nowrap">
             <thead>

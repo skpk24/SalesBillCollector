@@ -14,19 +14,31 @@ $bill_dates = array_values(array_unique(array_column($data, 'bill_date')));
 // For retailers, we filter out the empty strings found in your file
 $retailers = array_filter(array_unique(array_column($data, 'retailer_name')));
 
+
+$total = array_sum(array_column($data, 'bill_amount'));
+
+$collected = array_sum(array_column($data, 'paid_amt'));
+
+$formatter = new NumberFormatter('en_IN', NumberFormatter::CURRENCY);
+
+$total = abs($total - $collected);
+
+//$amount = $formatter->formatCurrency($total, 'INR');
+//echo $formatter->formatCurrency($amount, 'INR');
+
 ?>
 
 <div class="row">
   <div class="col-md-12">
     <div class="card shadow">
-      <div class="card-header bg-primary text-white"><h3 class="card-title mb-0">Sales Bills</h3></div>
+      <div class="card-header bg-primary text-white"><h3 class="card-title mb-0"><strong>Sales Bills</strong> &nbsp;&nbsp;<span class="text-bg-danger">&nbsp;Collect: <?php echo htmlspecialchars($formatter->formatCurrency($total, 'INR')); ?>&nbsp;</span>  &nbsp;&nbsp; <span class="text-bg-success">&nbsp;Collected: <?php echo htmlspecialchars($formatter->formatCurrency($collected, 'INR')); ?>&nbsp;</span></h3></div>
       <div class="card-body table-responsive p-0">
         <form method="get" class="filter">
           <input type="hidden" name="p" value="<?php echo htmlspecialchars($_GET['p']); ?>">
           <table class="table table-hover text-nowrap">
             <thead>
               <tr>
-                <th>Bill Number</th>
+                <th>Bill No.</th>
                 <th>Bill Date</th>
                 <th>Retailer Name</th>
                 <th>Beat Name</th>
