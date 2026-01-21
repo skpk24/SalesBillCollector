@@ -62,6 +62,13 @@ if ($user_id !== '') {
 }
 
 $sql = "SELECT * FROM sales_bills";
+
+if(!empty($_GET['c']) && $_GET['c'] == 1){
+    $where[]  = 'bill_amount = paid_amt';   
+}else{
+    $where[]  = 'bill_amount != paid_amt';
+}
+
 if ($where) {
     $sql .= " WHERE " . implode(" AND ", $where);
 }
