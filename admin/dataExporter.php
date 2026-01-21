@@ -31,10 +31,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         
 
         // Fetch and write data rows
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $bills = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $data = json_decode(json_encode($bills), true);
+        $total = array_sum(array_column($data, 'bill_amount'));
+        $collected = array_sum(array_column($data, 'paid_amt'));
+        $pending = array_sum(array_column($data, 'pending_amt'));
+        //$total = abs($total - $collected);
+
+        foreach ($bills as $row) {
             fputcsv($output, $row);
         }
-
+        // Add totals row
+        fputcsv($output, ['', '', '', '', '', $total, $collected, $pending, '', '', '', '', '', '', '', '']);
+        
         fclose($output);
         exit;
 

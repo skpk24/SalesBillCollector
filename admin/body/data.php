@@ -65,6 +65,8 @@ $total = abs($total - $collected);
                   <select id="salesmanSelect" name="salesman" class="form-select form-select-sm"><option value="">All Salesmen</option></select>
                 </td>
                 <td><input type="text" name="bill_amount" class="form-control" value="<?php echo htmlspecialchars($bill_amount); ?>"></td>
+                <td><input type="text" name="paid_amt" class="form-control" disabled   value=""></td>
+                <td><input type="text" name="pending_amt" class="form-control" disabled  value=""></td>
                 <td>
                     <select name="is_full_pmt" class="form-select form-select-sm">
                         <option value="">Any</option>
@@ -72,8 +74,6 @@ $total = abs($total - $collected);
                         <option value="0" <?php if ($is_full_pmt === '0') echo 'selected'; ?>>No</option>
                     </select>
                 </td>
-                <td></td>
-                <td></td>
                 <td>
                   <select name="pmt_mode" class="form-select form-select-sm">
                         <option value="">Any</option>

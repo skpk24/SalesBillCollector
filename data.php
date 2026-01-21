@@ -24,7 +24,7 @@ $formatter = new NumberFormatter('en_IN', NumberFormatter::CURRENCY);
 $total = abs($total - $collected);
 
 //$amount = $formatter->formatCurrency($total, 'INR');
-//echo $formatter->formatCurrency($amount, 'INR');
+//echo $formatter->formatCurrency($total, 'INR');
 
 ?>
 
@@ -63,6 +63,8 @@ $total = abs($total - $collected);
                   <select id="beatSelect" name="beat_name" class="form-select form-select-sm"><option value="">All Beats</option></select>
                 </td>
                 <td><input type="text" name="bill_amount" class="form-control" value="<?php echo htmlspecialchars($bill_amount); ?>"></td>
+                <td><input type="text" name="paid_amt" class="form-control" disabled   value=""></td>
+                <td><input type="text" name="pending_amt" class="form-control" disabled  value=""></td>
                 <td>
                     <select name="is_full_pmt" class="form-select form-select-sm">
                         <option value="">Any</option>
