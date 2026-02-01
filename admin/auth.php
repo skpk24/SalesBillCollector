@@ -37,6 +37,7 @@ function login_user(string $usernameOrEmail, string $password): bool
 
 
       if ($user && password_verify($password, $user['password_hash']) && (int)$user['is_active'] === 1) { //[web:12][web:24]
+        session_regenerate_id(true);
         $_SESSION['user_id'] = (int)$user['id'];
         $_SESSION['fullname'] = $user['fullname'];
         $_SESSION['created_at'] = $user['created_at'];
@@ -53,6 +54,7 @@ function login_user(string $usernameOrEmail, string $password): bool
 
         $userSchema = [];
         $permissions = [];
+        $roles = [];
 
         // Optimize by grouping permissions under their respective roles
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -66,9 +68,13 @@ function login_user(string $usernameOrEmail, string $password): bool
             
             $userSchema[$roleId]['permissions'][] = $row['permission_name'];
             $permissions[] = $row['permission_name'];
+            if(!in_array($roleId, $roles))
+            $roles[] = $roleId;
         }
         $_SESSION['user_schema'] = $userSchema;
         $_SESSION['permissions'] = array_unique($permissions);
+        $_SESSION['roles'] = array_unique($roles);
+        $_SESSION['last_login_time'] = time();
 
         return true;
     }

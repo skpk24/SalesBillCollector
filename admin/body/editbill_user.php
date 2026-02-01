@@ -80,7 +80,7 @@
             if ($('#typebtnradio2').is(':checked')) {
                 $('#myTargetDiv').show();
                 $('input[name="pending_amt"]').val(original_pending_amt>0.00 ? original_pending_amt : '');
-                $('input[name="paid_amt"]').val(original_paid_amt>0.00 ? original_paid_amt : '');
+                $('input[name="paid_amt"]').val(original_paid_amt>0.00 ? '' : '');
                 $('input[name="paid_amt"]').prop('readonly', false);
                 $('input[name="pending_amt"]').prop('readonly', false);
                 $('input[name="paid_amt"]').prop('required', true).addClass('highlight');
