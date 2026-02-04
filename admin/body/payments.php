@@ -1,6 +1,6 @@
 <?php
 require 'db.php';
-
+$transactions = null;
 include('payment_filters.php');
 
 //$result = $stmt->get_result();
@@ -14,15 +14,23 @@ $bill_dates = array_values(array_unique(array_column($data, 'bill_date')));
 // For retailers, we filter out the empty strings found in your file
 $retailers = array_filter(array_unique(array_column($data, 'retailer_name')));
 
+$bill_numbers = array_values(array_unique(array_column($data, 'bill_number')));
 
 $total = array_sum(array_column($data, 'bill_amount'));
 
-$collected = array_sum(array_column($data, 'paid_amt'));
+$collected = array_sum(array_column($transactions, 'amount'));
 
 $formatter = new NumberFormatter('en_IN', NumberFormatter::CURRENCY);
 
 $total = abs($total - $collected);
 
+//echo json_encode($transactions)."<br/>";
+//echo json_encode($bill_number)."<br/>";
+
+$ids = [];
+if(!empty($transactions)) {
+    $ids = array_column($transactions, 'sales_bill_id');
+}
 
 ?>
 
@@ -40,15 +48,15 @@ $total = abs($total - $collected);
           </div>
           <div class="col-4">
             <label>
-                <input type="text" id="from" name="from_date" class="form-control" placeholder="From Date/time" value="<?php echo !empty($from_date) ? htmlspecialchars($from_date) : ''; ?>">
+                <input type="text" id="from" name="from_date" class="form-control" required placeholder="From Date/time" value="<?php echo !empty($defaultFrom_date) ? htmlspecialchars($defaultFrom_date) : ''; ?>">
             </label>
             <label>
-                <input type="text" id="to" name="to_date" class="form-control" placeholder="To Date/time" value="<?php echo !empty($to_date) ? htmlspecialchars($to_date) : ''; ?>">
+                <input type="text" id="to" name="to_date" class="form-control" required placeholder="To Date/time" value="<?php echo !empty($defaultTo_date) ? htmlspecialchars($defaultTo_date) : ''; ?>">
             </label>
           </div>
-          <div class="col-3">
+          <!--div class="col-3">
               <input type="text" name="bill_number" class="form-control" placeholder="Bill Number" value="<?php echo htmlspecialchars($bill_number); ?>">
-          </div>
+          </div-->
           <div class="col-2">
               <button type="submit" class="btn btn-primary">Filter</button>
               <a href="<?php echo strtok($_SERVER['REQUEST_URI'], '?').'?p='.$_GET['p']; ?>">Reset</a>
@@ -80,18 +88,43 @@ $total = abs($total - $collected);
           <tbody>
             
           <?php    
-            foreach ($bills as $r): ?>
+            foreach ($bills as $r): 
+            $index = array_search($r['id'], $ids);
+
+            $foundBill = null;
+            
+              $foundBill = array_filter($transactions, function($obj) use ($r) {
+                  return $obj['sales_bill_id'] === $r['id'];
+              });
+              //$foundBill = reset($foundBill); // Get the first matching element
+              $grandTotal = 0;
+              if (!empty($foundBill) && is_array($foundBill)) {
+                  $grandTotal = array_sum(array_column($foundBill, 'amount'));
+              }
+
+              $upiRow = array_filter($foundBill, function($item) {
+                  return $item['payment_type'] === 'UPI';
+              });
+              
+              $chequeRow = array_filter($foundBill, function($item) {
+                  return $item['payment_type'] === 'CHEQUE';
+              });
+
+              $cashRow = array_filter($foundBill, function($item) {
+                  return $item['payment_type'] === 'CASH';
+              });
+            ?>
             <tr>
               <td><a href="default.php?p=ZWRpdGJpbGwucGhw&bill_id=<?= $r['id'] ?>"><?= htmlspecialchars($r['bill_number']) ?></a></td>
               <td><?= htmlspecialchars($r['bill_date']) ?></td>
               <td><?= !empty($r['retailer_name']) ? htmlspecialchars($r['retailer_name']) : '' ?></td>
               <td><?= !empty($r['beat_name']) ? htmlspecialchars($r['beat_name']) : '' ?></td>
               <td><?= !empty($r['salesman']) ? htmlspecialchars($r['salesman']) : '' ?></td>
-              <td><?= !empty($r['bill_amount']) ? htmlspecialchars($r['bill_amount']) : '' ?></td>
-              <td><?= !empty($r['paid_amt']) ? htmlspecialchars($r['paid_amt']) : '' ?></td>
-              <td><?= !empty($r['cash']) ? htmlspecialchars($r['cash']) : '' ?></td>
-              <td><?= !empty($r['upi']) ? htmlspecialchars($r['upi']) : '' ?></td>
-              <td><?= !empty($r['cheque']) ? htmlspecialchars($r['cheque']) : '' ?></td>
+              <td><?= !empty($r['bill_amount']) ? htmlspecialchars($formatter->formatCurrency($r['bill_amount'], 'INR')) : '' ?></td>
+              <td><?= htmlspecialchars($formatter->formatCurrency($grandTotal, 'INR')) ?></td>
+              <td><?= !empty($cashRow) ? htmlspecialchars($formatter->formatCurrency(array_sum(array_column($cashRow, 'amount')), 'INR')) : 0 ?></td>
+              <td><?= !empty($upiRow) ? htmlspecialchars($formatter->formatCurrency(array_sum(array_column($upiRow, 'amount')), 'INR')) : 0 ?></td>
+              <td><?= !empty($chequeRow) ? htmlspecialchars($formatter->formatCurrency(array_sum(array_column($chequeRow, 'amount')), 'INR')) : 0 ?></td>
               <td><?= !empty($r['is_full_pmt']) ? ($r['is_full_pmt'] == 1? 'Yes' : 'No') : 'No' ?></td>
             </tr>
           <?php endforeach; ?>
@@ -104,7 +137,7 @@ $total = abs($total - $collected);
               <div class="float-end">
                 <form action="dataExporter.php" method="GET">
                     <input type="hidden" name="f" value="p">
-                    <input type="hidden" name="fields" value="bill_number,bill_date,retailer_name,beat_name,salesman,bill_amount,paid_amt,pending_amt,cash,upi,cheque,is_full_pmt,pmt_mode,cheque_no,created_at,updated_at">
+                    <input type="hidden" name="fields" value="id,bill_number,bill_date,retailer_name,beat_name,salesman,bill_amount,paid_amt,pending_amt,cash,upi,cheque,is_full_pmt,pmt_mode,cheque_no,created_at,updated_at">
                     <input type="hidden" name="headings" value="Bill Number, Bill Date, Retailer Name, Beat Name, Salesman, Bill Amount, Paid, Pending, Cash, UPI, Cheque, Is Full, Mode, Ref No., Created At, Updated At">
                     <input type="hidden" name="fn" value="<?php echo !empty($_GET['salesman']) ? htmlspecialchars($_GET['salesman']) : ''; ?>">
                     <input type="hidden" name="p" value="<?php echo !empty($_GET['p']) ? htmlspecialchars($_GET['p']) : ''; ?>">

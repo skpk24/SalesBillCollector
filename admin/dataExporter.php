@@ -38,7 +38,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pending = array_sum(array_column($data, 'pending_amt'));
         //$total = abs($total - $collected);
 
+        //echo " Total: ".json_encode($transactions).") Collected: <br/>";
+
         foreach ($bills as $row) {
+            $foundBill = array_filter($transactions, function($obj) use ($row) {
+                  return $obj['sales_bill_id'] === $row['id'];
+              });
+              //$foundBill = reset($foundBill); // Get the first matching element
+              $grandTotal = 0;
+              if (!empty($foundBill) && is_array($foundBill)) {
+                  $grandTotal = array_sum(array_column($foundBill, 'amount'));
+              }
+
+              $upiRow = array_filter($foundBill, function($item) {
+                  return $item['payment_type'] === 'UPI';
+              });
+              
+              $chequeRow = array_filter($foundBill, function($item) {
+                  return $item['payment_type'] === 'CHEQUE';
+              });
+
+              $cashRow = array_filter($foundBill, function($item) {
+                  return $item['payment_type'] === 'CASH';
+              });
+
+              $row['paid_amt'] = $grandTotal;
+              $row['cash'] = !empty($cashRow) ? array_sum(array_column($cashRow, 'amount')) : 0.0;
+              $row['upi'] = !empty($upiRow) ? array_sum(array_column($upiRow, 'amount')) : 0.0;
+              $row['cheque'] = !empty($chequeRow) ? array_sum(array_column($chequeRow, 'amount')) : 0.0;    
+
             fputcsv($output, $row);
         }
         // Add totals row
