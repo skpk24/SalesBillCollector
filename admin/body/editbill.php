@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'paid_amt'    => $_POST['paid_amt'] ?? null,       // Value: "REF123"
         'pending_amt' => $_POST['pending_amt'] ?? null,      // Let's say this is empty
         'bill_number' => $_POST['bill_number'] ?? null,     // Let's say this is empty
+        'expired'     => isset($_POST['expired']) ? 1 : 0,   // New: expired field
         'updated_by'  => $_SESSION['user_id'] ?? null
     ];
 
@@ -86,6 +87,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $formData['paid_amt'] =  floatval($formData['paid_amt']) + floatval($_POST['original_paid_amt'] ?? 0.0);
         //echo "Admin Update: ".json_encode($formData)."<br/><br/>";
+        $expired = isset($_POST['expired']) ? true : false;
+        if($expired){
+            $formData['expired'] = date('Y-m-d H:i:s');
+        }
 
         $result = updateSaleBill($pdo, $id, $formData);
     }else{

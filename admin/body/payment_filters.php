@@ -28,7 +28,6 @@ function getBillTransactions(PDO $pdo, array $bill_numbers, $from_date, $to_date
         }else{
             $count = count($bill_numbers) - 1;  
         }
-        
     }
 
     $placeholders = str_repeat('?,', $count) . '?';
@@ -142,7 +141,7 @@ if(!empty($sales_bill_ids)) {
 
 $fields = isset($_GET['fields']) ? $_GET['fields'] : '*';
 
-$sql = "SELECT ".$fields." FROM sales_bills  WHERE ((bill_amount = paid_amt AND pending_amt = 0) OR (bill_amount >= paid_amt AND pending_amt > 0)) AND 1 = 1 ";
+$sql = "SELECT ".$fields." FROM sales_bills  WHERE ((bill_amount = paid_amt AND pending_amt = 0) OR (bill_amount >= paid_amt AND pending_amt > 0)) AND expired IS NULL AND 1 = 1 ";
 
 if ($where) {
     $sql .= " AND " . implode(" AND ", $where);

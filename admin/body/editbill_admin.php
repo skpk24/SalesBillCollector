@@ -53,7 +53,15 @@
         <div class="mb-3">
             <label for="exampleInputPassword1" class="form-label">Beat Name</label>
             <input type="text" class="form-control"  name="beat_name" value="<?= !empty($bill) && !empty($bill['beat_name']) ? htmlspecialchars($bill['beat_name']) : '' ?>" />     
-        </div> 
+        </div>
+        <div class="mb-3">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="expiredCheck" name="expired" value="1" <?= !empty($bill) && $bill['expired'] == 1 ? 'checked' : '' ?> />
+                <label class="form-check-label" for="expiredCheck">
+                    Mark as Expired
+                </label>
+            </div>
+        </div>
         <div class="mb-3">
             <label for="exampleInputPassword1" class="form-label">Salesman</label>
             <select name="salesman" class="form-control" required>

@@ -7,6 +7,7 @@ $bill_amount   = $_GET['bill_amount']   ?? '';
 $is_full_pmt   = $_GET['is_full_pmt']   ?? '';
 $cheque_no     = $_GET['cheque_no']     ?? '';
 $pmt_mode      = $_GET['pmt_mode']      ?? '';
+$expired       = $_GET['expired']       ?? '';
 $user_id      = $_SESSION['user_id']    ?? '';
 
 $where  = [];
@@ -54,6 +55,11 @@ if ($pmt_mode !== '') {
     $params[] = '%' . $pmt_mode . '%';
     $types   .= ':pmt_mode';
 }
+if ($expired !== '') { // expect 0 or 1
+    $where[]  = 'expired = ?';
+    $params[] = $expired;
+    $types   .= ':expired';
+}
 
 if ($user_id !== '') {
     $where[]  = 'user_id = ?';
@@ -69,8 +75,10 @@ if(!empty($_GET['c']) && $_GET['c'] == 1){
     $where[]  = 'bill_amount != paid_amt';
 }
 
+
+
 if ($where) {
-    $sql .= " WHERE " . implode(" AND ", $where);
+    $sql .= " WHERE expired IS NULL AND " . implode(" AND ", $where);
 }
 $sql .= " ORDER BY id DESC";
 

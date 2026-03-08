@@ -9,6 +9,7 @@ $is_full_pmt   = $_GET['is_full_pmt']   ?? '';
 $cheque_no     = $_GET['cheque_no']     ?? '';
 $pmt_mode      = $_GET['pmt_mode']      ?? '';
 
+
 $where  = [];
 $params = [];
 $types  = '';

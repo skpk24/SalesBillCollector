@@ -48,6 +48,7 @@ $total = abs($total - $collected);
                 <th>Is Full</th>
                 <th>Pmt Mode</th>
                 <th>Cheque No.</th>
+                <th>Expired</th>
               </tr>
           </thead>
           <tbody>
@@ -81,6 +82,13 @@ $total = abs($total - $collected);
                     </select>
                 </td>
                 <td>
+                    <select name="expired" class="form-select form-select-sm">
+                        <option value="">Any</option>
+                        <option value="1" <?php if (!empty($_GET['expired']) && $_GET['expired'] === '1') echo 'selected'; ?>>Expired</option>
+                        <option value="0" <?php if (!empty($_GET['expired']) && $_GET['expired'] === '0') echo 'selected'; ?>>Active</option>
+                    </select>
+                </td>
+                <td>
                     <button type="submit" class="btn btn-primary">Filter</button>
                     <a href="<?php echo strtok($_SERVER['REQUEST_URI'], '?').'?p='.$_GET['p']; ?>">Reset</a>
                 </td>
@@ -98,8 +106,21 @@ $total = abs($total - $collected);
                 <?php } ?>
               </td>
               <td><?= htmlspecialchars($r['bill_date']) ?></td>
-              <td><?= !empty($r['retailer_name']) ? htmlspecialchars($r['retailer_name']) : '' ?></td>
-              <td><?= !empty($r['beat_name']) ? htmlspecialchars($r['beat_name']) : '' ?></td>
+              <td title="<?= !empty($r['retailer_name']) ? htmlspecialchars($r['retailer_name']) : '' ?>">
+                <?php 
+                  $text = !empty($r['retailer_name']) ? htmlspecialchars($r['retailer_name']) : $r['retailer_name']; 
+                  $display_text = mb_strimwidth($text, 0, 20, "...");
+                  echo htmlspecialchars($display_text);
+                ?>
+              </td>
+              <td title="<?= !empty($r['beat_name']) ? htmlspecialchars($r['beat_name']) : '' ?>" >
+                <?php 
+                  $text = !empty($r['beat_name']) ? htmlspecialchars($r['beat_name']) : $r['beat_name']; 
+                  $display_text = mb_strimwidth($text, 0, 20, "...");
+                  echo htmlspecialchars($display_text);
+                ?>
+
+              </td>
               <td><?= !empty($r['bill_amount']) ? htmlspecialchars($r['bill_amount']) : '' ?></td>
               <td><?= !empty($r['paid_amt']) ? htmlspecialchars($r['paid_amt']) : '' ?></td>
               <td><?= !empty($r['pending_amt']) ? htmlspecialchars($r['pending_amt']) : '' ?></td>
@@ -115,6 +136,7 @@ $total = abs($total - $collected);
                 <?php endif; ?>
 
               </td>
+              <td><?= !empty($r['expired']) && $r['expired'] == 1 ? '<span class="badge text-bg-danger">Expired</span>' : '<span class="badge text-bg-success">Active</span>' ?></td>
             </tr>
           <?php endforeach; ?>
           
