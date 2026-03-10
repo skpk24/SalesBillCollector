@@ -90,12 +90,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $expired = isset($_POST['expired']) ? true : false;
         if($expired){
             $formData['expired'] = date('Y-m-d H:i:s');
+        }else{
+            $formData['expired'] = null;
         }
 
         $result = updateSaleBill($pdo, $id, $formData);
     }else{
         $formData['paid_amt'] =  floatval($formData['paid_amt']) + floatval($_POST['original_paid_amt'] ?? 0.0);
-
+        $formData['expired'] = null;
         //echo "User Update: ".json_encode($formData)."<br/><br/>";
 
         $result = updateSaleBill($pdo, $id, $formData);
