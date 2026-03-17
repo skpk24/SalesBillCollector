@@ -115,7 +115,7 @@ if(!empty($transactions)) {
               });
             ?>
             <tr>
-              <td><a href="default.php?p=ZWRpdGJpbGwucGhw&bill_id=<?= $r['id'] ?>"><?= htmlspecialchars($r['bill_number']) ?></a></td>
+              <td><a href="default.php?p=ZWRpdGJpbGwucGhw&bill_id=<?= $r['id'] ?>&rp=<?= $_GET['p'] ?>&from_date=<?php if(isset($_GET['from_date'])) { echo htmlspecialchars($_GET['from_date']); }  ?>&to_date=<?php if(isset($_GET['to_date'])) { echo htmlspecialchars($_GET['to_date']); }  ?>" class="alert-link"><?= htmlspecialchars($r['bill_number']) ?></a></td>
               <td><?= htmlspecialchars($r['bill_date']) ?></td>
               <td><?= !empty($r['retailer_name']) ? htmlspecialchars($r['retailer_name']) : '' ?></td>
               <td><?= !empty($r['beat_name']) ? htmlspecialchars($r['beat_name']) : '' ?></td>

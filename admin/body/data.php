@@ -98,7 +98,7 @@ $total = abs($total - $collected);
           <?php    
             foreach ($bills as $r): ?>
             <tr>
-              <td><a href="default.php?p=ZWRpdGJpbGwucGhw&bill_id=<?= $r['id'] ?>"><?= htmlspecialchars($r['bill_number']) ?></a></td>
+              <td><a href="default.php?p=ZWRpdGJpbGwucGhw&bill_id=<?= $r['id'] ?>&rp=<?= $_GET['p'] ?>"><?= htmlspecialchars($r['bill_number']) ?></a></td>
               <td><?= htmlspecialchars($r['bill_date']) ?></td>
               <td title="<?= !empty($r['retailer_name']) ? htmlspecialchars($r['retailer_name']) : '' ?>">
                 <?php 
