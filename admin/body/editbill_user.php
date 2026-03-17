@@ -31,14 +31,14 @@
             </div>
             <div class="mb-3">
                 <label for="exampleInputPassword1" class="form-label">Paid Amount</label>
-                <?php if ($is_paid): ?>
+                <?php if ($is_fully_paid): ?>
                     <span>₹<?= !empty($bill) && !empty($bill['paid_amt']) && $bill['paid_amt'] != 0.00 ? htmlspecialchars($bill['paid_amt']) : '' ?></span>
                 <?php else: ?>
                     <input type="number" step="any" placeholder="0.00" class="form-control" readonly name="paid_amt" value="<?= !empty($bill) && !empty($bill['paid_amt']) && $bill['paid_amt'] != 0.00 ? htmlspecialchars($bill['paid_amt']) : htmlspecialchars($bill['bill_amount']) ?>" />
                 <?php endif; ?>
                 <input type="hidden" name="original_paid_amt" value="<?= !empty($bill) && !empty($bill['paid_amt']) ? htmlspecialchars($bill['paid_amt']) : 0.0 ?>" />
             </div>
-            <?php if (!$is_paid): ?>
+            <?php if (!$is_fully_paid): ?>
             <div class="mb-3" id="myTargetDiv">
                 <label for="exampleInputPassword1" class="form-label">Pending Amount</label>
                 <input type="number" step="any" placeholder="0.00" class="form-control" readonly name="pending_amt" value="<?= !empty($bill) && !empty($bill['pending_amt']) ? htmlspecialchars($bill['pending_amt']) : 0.0 ?>" />
@@ -47,7 +47,7 @@
             <?php endif; ?>
             <div class="mb-3" id="myTargetDiv1">
                 <label for="exampleInputPassword1" class="form-label">Cheque Number / UPI No.</label>
-                <?php if ($is_paid): ?>
+                <?php if ($is_fully_paid): ?>
                     <br/><span><?= !empty($bill) && !empty($bill['cheque_no']) ? htmlspecialchars($bill['cheque_no']) : '' ?></span>
                 <?php else: ?>
                     <input type="text" style="text-transform: uppercase;" class="form-control" name="cheque_no" value="<?= !empty($bill) && !empty($bill['cheque_no']) ? htmlspecialchars($bill['cheque_no']) : '' ?>" />
@@ -59,7 +59,7 @@
         <!--end::Body-->
         <!--begin::Footer-->
         <div class="card-footer">
-            <?php if (!$is_paid): ?>
+            <?php if (!$is_fully_paid): ?>
             <button type="submit" class="btn btn-primary">Submit</button>
             <?php endif; ?>
         </div>

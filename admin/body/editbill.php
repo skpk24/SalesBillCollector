@@ -117,10 +117,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Error: Bill not found.");
     }
 
-    $is_paid = false;
+    $is_fully_paid = false;
     // If pending amount is zero and paid amount is equal to or greater than bill amount, set is_full_pmt to 0
     if (!empty($bill['pending_amt']) && $bill['pending_amt'] == 0 && $bill['paid_amt'] >= $bill['bill_amount']) {
-        $is_paid = true;   
+        $is_fully_paid = true;   
+    }
+
+    $is_partially_paid = false;
+    // If pending amount is not zero and paid amount is greater than 0, set is_partially_paid to true
+    if ($bill['paid_amt'] > 0) {
+        $is_partially_paid = true;
     }
 
     if ($isAdmin) {
