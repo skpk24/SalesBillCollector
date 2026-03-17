@@ -3,7 +3,8 @@ require 'db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
-        if(isset($_GET['f']) && $_GET['f'] === 'p'){
+        $isPaymentExport = isset($_GET['f']) && $_GET['f'] === 'p';
+        if($isPaymentExport){
             include('./body/payment_filters.php');
         }else{
             include('./body/report_filters.php');
@@ -41,36 +42,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         //echo " Total: ".json_encode($transactions).") Collected: <br/>";
 
         foreach ($bills as $row) {
-            $foundBill = array_filter($transactions, function($obj) use ($row) {
-                  return $obj['sales_bill_id'] === $row['id'];
-              });
-              //$foundBill = reset($foundBill); // Get the first matching element
-              $grandTotal = 0;
-              if (!empty($foundBill) && is_array($foundBill)) {
-                  $grandTotal = array_sum(array_column($foundBill, 'amount'));
-              }
+            if($isPaymentExport){
+                $foundBill = array_filter($transactions, function($obj) use ($row) {
+                    return $obj['sales_bill_id'] === $row['id'];
+                });
+                //$foundBill = reset($foundBill); // Get the first matching element
+                $grandTotal = 0;
+                if (!empty($foundBill) && is_array($foundBill)) {
+                    $grandTotal = array_sum(array_column($foundBill, 'amount'));
+                }
 
-              $upiRow = array_filter($foundBill, function($item) {
-                  return $item['payment_type'] === 'UPI';
-              });
-              
-              $chequeRow = array_filter($foundBill, function($item) {
-                  return $item['payment_type'] === 'CHEQUE';
-              });
+                $upiRow = array_filter($foundBill, function($item) {
+                    return $item['payment_type'] === 'UPI';
+                });
+                
+                $chequeRow = array_filter($foundBill, function($item) {
+                    return $item['payment_type'] === 'CHEQUE';
+                });
 
-              $cashRow = array_filter($foundBill, function($item) {
-                  return $item['payment_type'] === 'CASH';
-              });
+                $cashRow = array_filter($foundBill, function($item) {
+                    return $item['payment_type'] === 'CASH';
+                });
 
-              $row['paid_amt'] = $grandTotal;
-              $row['cash'] = !empty($cashRow) ? array_sum(array_column($cashRow, 'amount')) : 0.0;
-              $row['upi'] = !empty($upiRow) ? array_sum(array_column($upiRow, 'amount')) : 0.0;
-              $row['cheque'] = !empty($chequeRow) ? array_sum(array_column($chequeRow, 'amount')) : 0.0;    
-
+                $row['paid_amt'] = $grandTotal;
+                $row['cash'] = !empty($cashRow) ? array_sum(array_column($cashRow, 'amount')) : 0.0;
+                $row['upi'] = !empty($upiRow) ? array_sum(array_column($upiRow, 'amount')) : 0.0;
+                $row['cheque'] = !empty($chequeRow) ? array_sum(array_column($chequeRow, 'amount')) : 0.0;    
+            }
             fputcsv($output, $row);
         }
         // Add totals row
-        fputcsv($output, ['', '', '', '', '', $total, $collected, $pending, '', '', '', '', '', '', '', '']);
+        if($isPaymentExport){
+            fputcsv($output, ['', '', '', '', '', 'Total', $total, $collected, $pending, '', '', '', '', '', '', '', '']);  
+        }
         
         fclose($output);
         exit;

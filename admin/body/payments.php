@@ -138,8 +138,8 @@ if(!empty($transactions)) {
                 <form action="dataExporter.php" method="GET">
                     <input type="hidden" name="f" value="p">
                     <input type="hidden" name="fields" value="id,bill_number,bill_date,retailer_name,beat_name,salesman,bill_amount,paid_amt,pending_amt,cash,upi,cheque,is_full_pmt,pmt_mode,cheque_no,created_at,updated_at">
-                    <input type="hidden" name="headings" value="Bill Number, Bill Date, Retailer Name, Beat Name, Salesman, Bill Amount, Paid, Pending, Cash, UPI, Cheque, Is Full, Mode, Ref No., Created At, Updated At">
-                    <input type="hidden" name="fn" value="<?php echo !empty($_GET['salesman']) ? htmlspecialchars($_GET['salesman']) : ''; ?>">
+                    <input type="hidden" name="headings" value="Id, Bill Number, Bill Date, Retailer Name, Beat Name, Salesman, Bill Amount, Paid, Pending, Cash, UPI, Cheque, Is Full, Mode, Ref No., Created At, Updated At">
+                    <input type="hidden" name="fn" value="<?php echo !empty($_GET['salesman']) ? htmlspecialchars($_GET['salesman']) : 'Collected'; ?>">
                     <input type="hidden" name="p" value="<?php echo !empty($_GET['p']) ? htmlspecialchars($_GET['p']) : ''; ?>">
                     <input type="hidden" name="bill_number" value="<?php echo !empty($_GET['bill_number']) ? htmlspecialchars($_GET['bill_number']) : ''; ?>">
                     <input type="hidden" name="bill_date" value="<?php echo !empty($_GET['bill_date']) ? htmlspecialchars($_GET['bill_date']) : ''; ?>">
