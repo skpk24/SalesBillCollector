@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ?>
 
-<h3><a href="default.php?p=<?= $_GET['rp']?$_GET['rp'] : $_GET['p']; ?>&from_date=<?php echo isset($_GET['from_date']) ? htmlspecialchars($_GET['from_date']) : ''; ?>&to_date=<?php echo isset($_GET['to_date']) ? htmlspecialchars($_GET['to_date']) : ''; ?>" class="alert-link"><< BACK</a>.</h3> Go back to the bills list.
+<h3><a href="default.php?p=<?= $_GET['rp'] ?>&from_date=<?php echo isset($_GET['from_date']) ? htmlspecialchars($_GET['from_date']) : ''; ?>&to_date=<?php echo isset($_GET['to_date']) ? htmlspecialchars($_GET['to_date']) : ''; ?>" class="alert-link"><< BACK</a>.</h3> Go back to the bills list.
     <?php if ($message): ?>
     <div class="alert alert-success" role="alert">
         <p><strong><?= $message ?></strong></p>

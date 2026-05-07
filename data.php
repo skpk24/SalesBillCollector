@@ -100,7 +100,7 @@ $total = abs($total - $collected);
                 <?php if(!empty($r['paid_amt']) && $r['bill_amount'] == $r['paid_amt']){?>
                   <?= htmlspecialchars($r['bill_number']) ?>
                 <?php }else{?>
-                  <a href="default.php?p=ZWRpdGJpbGwucGhw&bill_id=<?= $r['id'] ?>">
+                  <a href="default.php?p=ZWRpdGJpbGwucGhw&bill_id=<?= $r['id'] ?>&rp=<?= $_GET['p'] ?>">
                     <?= htmlspecialchars($r['bill_number']) ?>
                   </a>
                 <?php } ?>
